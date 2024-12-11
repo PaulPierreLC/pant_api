@@ -1,7 +1,9 @@
 package group.pant.api.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -10,7 +12,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "utilisateur")
+@Table(name = "utilisateur", schema = "pant_db")
 public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,15 +46,15 @@ public class Utilisateur {
     @Column(name = "date_creation")
     private Instant dateCreation;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_role", nullable = false)
     private Role idRole;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_restaurant")
     private Restaurant idRestaurant;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_vehicule")
     private Vehicule idVehicule;
 
