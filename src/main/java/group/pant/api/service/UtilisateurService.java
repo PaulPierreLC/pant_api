@@ -2,6 +2,8 @@ package group.pant.api.service;
 
 import group.pant.api.model.Utilisateur;
 import group.pant.api.repository.UtilisateurRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jdk.jshell.execution.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,26 @@ public class UtilisateurService {
         return utilisateurRepository.save(utilisateur);
     }
 
-    public Utilisateur updateUtilisateur(Utilisateur utilisateur) {
+    public Utilisateur updateUtilisateur(int id, Utilisateur newData) {
+        Utilisateur existingUtilisateur = utilisateurRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur with id " + id + " not found"));
+
+        existingUtilisateur.setPrenom(newData.getPrenom());
+        existingUtilisateur.setNom(newData.getNom());
+        existingUtilisateur.setTelMobile(newData.getTelMobile());
+        existingUtilisateur.setTelFix(newData.getTelFix());
+        existingUtilisateur.setMail(newData.getMail());
+        existingUtilisateur.setParametre(newData.getParametre());
+        existingUtilisateur.setPointsFidelite(newData.getPointsFidelite());
+        existingUtilisateur.setDateCreation(newData.getDateCreation());
+        existingUtilisateur.setIdRole(newData.getIdRole());
+        existingUtilisateur.setIdRestaurant(newData.getIdRestaurant());
+        existingUtilisateur.setIdVehicule(newData.getIdVehicule());
+
+        return utilisateurRepository.save(existingUtilisateur);
+    }
+
+    public Utilisateur patchUtilisateur(Utilisateur utilisateur) {
         return utilisateurRepository.save(utilisateur);
     }
 

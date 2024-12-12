@@ -8,7 +8,6 @@ import java.time.Instant;
 
 @Getter
 @Setter
-@Data
 @Entity
 @Table(name = "utilisateur", schema = "pant_db")
 public class Utilisateur {
