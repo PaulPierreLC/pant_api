@@ -24,9 +24,7 @@ public class ApiController {
 
     @GetMapping("utilisateurs")
     public List<Utilisateur> getUtilisateurs() {
-        List<Utilisateur> utilisateurs = utilisateurService.getAllUtilisateurs();
-        System.out.println("Retrieved Utilisateurs: " + utilisateurs);
-        return utilisateurs;
+        return utilisateurService.getAllUtilisateurs();
     }
 
     @GetMapping("utilisateur/{id}")

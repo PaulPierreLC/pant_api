@@ -1,16 +1,14 @@
 package group.pant.api.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
 @Getter
 @Setter
+@Data
 @Entity
 @Table(name = "utilisateur", schema = "pant_db")
 public class Utilisateur {
