@@ -240,7 +240,7 @@ DROP TABLE IF EXISTS `pant_db`.`avis` ;
 CREATE TABLE IF NOT EXISTS `pant_db`.`avis` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `titre` VARCHAR(45) NULL,
-  `description` VARCHAR(45) NULL,
+  `description` TEXT NULL,
   `note` INT NOT NULL,
   `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `id_restaurant` INT NOT NULL,
@@ -276,7 +276,7 @@ DROP TABLE IF EXISTS `pant_db`.`plat` ;
 CREATE TABLE IF NOT EXISTS `pant_db`.`plat` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(45) NOT NULL,
-  `description` VARCHAR(45) NOT NULL,
+  `description` TEXT NOT NULL,
   `prix` FLOAT NOT NULL,
   `poids` FLOAT NOT NULL,
   `stock` INT NOT NULL,

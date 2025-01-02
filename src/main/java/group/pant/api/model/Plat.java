@@ -10,13 +10,15 @@ import lombok.Setter;
 @Table(name = "plat")
 public class Plat {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @Column(name = "nom", nullable = false, length = 45)
     private String nom;
 
-    @Column(name = "description", nullable = false, length = 45)
+    @Lob
+    @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "prix", nullable = false)
@@ -31,7 +33,7 @@ public class Plat {
     @Column(name = "photo", length = 45)
     private String photo;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_restaurant", nullable = false)
     private Restaurant idRestaurant;
 
