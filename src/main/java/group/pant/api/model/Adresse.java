@@ -3,6 +3,8 @@ package group.pant.api.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
@@ -10,6 +12,7 @@ import lombok.Setter;
 @Table(name = "adresse")
 public class Adresse {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -28,7 +31,8 @@ public class Adresse {
     @Column(name = "latitude")
     private Double latitude;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_ville", nullable = false)
     private Ville idVille;
 

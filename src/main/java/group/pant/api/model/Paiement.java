@@ -3,6 +3,8 @@ package group.pant.api.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
@@ -16,8 +18,9 @@ public class Paiement {
     @Column(name = "etat", nullable = false)
     private Boolean etat = false;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "id_methode_paiement", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "id_methode_paiement")
     private PaiementType idMethodePaiement;
 
 }
