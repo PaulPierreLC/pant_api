@@ -31,7 +31,7 @@ public class Adresse {
     @Column(name = "latitude")
     private Double latitude;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_ville", nullable = false)
     private Ville idVille;

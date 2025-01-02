@@ -18,7 +18,7 @@ public class Vehicule {
     @Column(name = "nom", nullable = false, length = 45)
     private String nom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "id_vehicule_type")
     private VehiculeType idVehiculeType;
