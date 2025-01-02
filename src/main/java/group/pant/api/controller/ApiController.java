@@ -2,8 +2,10 @@ package group.pant.api.controller;
 
 import group.pant.api.model.Plat;
 import group.pant.api.model.Utilisateur;
+import group.pant.api.model.Ville;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.UtilisateurService;
+import group.pant.api.service.VilleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,9 @@ public class ApiController {
 
     @Autowired
     PlatService platService;
+
+    @Autowired
+    VilleService villeService;
 
     @GetMapping()
     public String accueil() {
@@ -91,4 +96,29 @@ public class ApiController {
         Plat patchedPlat = platService.patchUser(id, patch);
         return ResponseEntity.ok(patchedPlat);
     }
+
+    @GetMapping("villes")
+    public List<Ville> getVilles() { return villeService.getAllVilles(); }
+
+    @GetMapping("villes/{id}")
+    public Ville getVille(@PathVariable int id) { return villeService.getVilleById(id); }
+
+    @PostMapping("villes")
+    public Ville addVille (@RequestBody Ville ville) { return villeService.addVille(ville); }
+
+    @DeleteMapping("villes/{id}")
+    public String deleteVille(@PathVariable int id) { return villeService.deleteVilleById(id); }
+
+    @PutMapping("villes/{id}")
+    public ResponseEntity<Ville> updateVille(@PathVariable int id, @RequestBody Ville ville) {
+        Ville updatedVille = villeService.updateVille(id, ville);
+        return ResponseEntity.ok(updatedVille);
+    }
+
+    @PatchMapping("villes/{id}")
+    public ResponseEntity<Ville> patchVille(@PathVariable int id, @RequestBody Map<String, Object> patch) {
+        Ville patchedVille = villeService.patchVille(id, patch);
+        return ResponseEntity.ok(patchedVille);
+    }
+
 }
