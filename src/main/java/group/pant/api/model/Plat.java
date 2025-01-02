@@ -31,7 +31,7 @@ public class Plat {
     @Column(name = "photo", length = 45)
     private String photo;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_restaurant", nullable = false)
     private Restaurant idRestaurant;
 

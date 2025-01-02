@@ -16,11 +16,11 @@ public class Reserveration {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_utilisateur", nullable = false)
     private Utilisateur idUtilisateur;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_restaurant", nullable = false)
     private Restaurant idRestaurant;
 

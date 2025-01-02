@@ -16,7 +16,7 @@ public class Paiement {
     @Column(name = "etat", nullable = false)
     private Boolean etat = false;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_methode_paiement", nullable = false)
     private PaiementType idMethodePaiement;
 
