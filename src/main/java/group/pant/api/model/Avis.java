@@ -31,15 +31,15 @@ public class Avis {
     @Column(name = "date_creation")
     private Instant dateCreation;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_restaurant", nullable = false)
     private Restaurant idRestaurant;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_utilisateur", nullable = false)
     private Utilisateur idUtilisateur;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_commande")
     private Commande idCommande;
 

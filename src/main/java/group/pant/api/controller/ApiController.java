@@ -5,8 +5,6 @@ import group.pant.api.model.Utilisateur;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,5 +66,15 @@ public class ApiController {
     @GetMapping("plats/{id}")
     public Plat getPlat(@PathVariable int id) {
         return platService.getPlatById(id);
+    }
+
+    @PostMapping("plats")
+    public Plat addPlat (@RequestBody Plat plat) {
+        return platService.addPlat(plat);
+    }
+
+    @DeleteMapping("plats/{id}")
+    public String deletePlat(@PathVariable int id) {
+        return platService.deletePlat(id);
     }
 }

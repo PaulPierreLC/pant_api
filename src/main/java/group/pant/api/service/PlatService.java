@@ -22,4 +22,13 @@ public class PlatService {
                 .orElseThrow(() -> new EntityNotFoundException("Plat with id " + id + " not found"));
     }
 
+    public Plat addPlat(Plat plat) {
+        platRepository.save(plat);
+        return plat;
+    }
+
+    public String deletePlat(int id) {
+        platRepository.deleteById(id);
+        return "Deleted Plat";
+    }
 }
