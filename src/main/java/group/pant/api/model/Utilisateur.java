@@ -1,5 +1,7 @@
 package group.pant.api.model;
 
+import group.pant.api.converter.JsonNodeConverter;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,9 +35,9 @@ public class Utilisateur {
     @Column(name = "mail", nullable = false, length = 45)
     private String mail;
 
-    @Lob
+    @Convert(converter = JsonNodeConverter.class)
     @Column(name = "parametre", nullable = false)
-    private String parametre;
+    private JsonNode parametre;
 
     @ColumnDefault("0")
     @Column(name = "points_fidelite", nullable = false)

@@ -1,6 +1,7 @@
 package group.pant.api.controller;
 
 import group.pant.api.model.Plat;
+import group.pant.api.model.Role;
 import group.pant.api.model.Utilisateur;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.UtilisateurService;
@@ -20,6 +21,7 @@ public class ApiController {
 
     @Autowired
     PlatService platService;
+
 
     @GetMapping()
     public String accueil() {
@@ -90,5 +92,12 @@ public class ApiController {
     public ResponseEntity<Plat> patchPlat(@PathVariable int id, @RequestBody Map<String, Object> patch) {
         Plat patchedPlat = platService.patchUser(id, patch);
         return ResponseEntity.ok(patchedPlat);
+    }
+
+    // Pour les rôles
+
+    @PostMapping("utilisateurs/{utilisateurId}/role/{roleId}")
+    public Utilisateur assignRoleToUtilisateur(@PathVariable int utilisateurId, @PathVariable int roleId) {
+        return utilisateurService.assignRoleToUtilisateur(utilisateurId, roleId);
     }
 }
