@@ -5,6 +5,7 @@ import group.pant.api.model.Utilisateur;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -76,5 +77,11 @@ public class ApiController {
     @DeleteMapping("plats/{id}")
     public String deletePlat(@PathVariable int id) {
         return platService.deletePlat(id);
+    }
+
+    @PutMapping("plats/{id}")
+    public ResponseEntity<Plat> updatePlat(@PathVariable int id, @RequestBody Plat plat) {
+        Plat updatedPlat = platService.updatePlat(id, plat);
+        return ResponseEntity.ok(updatedPlat);
     }
 }

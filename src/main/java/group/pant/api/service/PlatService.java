@@ -31,4 +31,9 @@ public class PlatService {
         platRepository.deleteById(id);
         return "Deleted Plat";
     }
+
+    public Plat updatePlat(int id, Plat plat) {
+        plat.setId(id);
+        return platRepository.save(plat);
+    }
 }
