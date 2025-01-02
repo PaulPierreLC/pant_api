@@ -1,18 +1,20 @@
 package group.pant.api.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "utilisateur", schema = "pant_db")
+@Table(name = "utilisateur")
 public class Utilisateur {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -48,10 +50,7 @@ public class Utilisateur {
     private Role idRole;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_restaurant")
-    private Restaurant idRestaurant;
-
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "id_vehicule")
     private Vehicule idVehicule;
 

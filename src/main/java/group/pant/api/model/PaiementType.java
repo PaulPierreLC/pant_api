@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "paiment_type")
-public class PaimentType {
+@Table(name = "paiement_type")
+public class PaiementType {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;

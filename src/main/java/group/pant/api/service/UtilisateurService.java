@@ -39,7 +39,6 @@ public class UtilisateurService {
         existingUtilisateur.setPointsFidelite(newData.getPointsFidelite());
         existingUtilisateur.setDateCreation(newData.getDateCreation());
         existingUtilisateur.setIdRole(newData.getIdRole());
-        existingUtilisateur.setIdRestaurant(newData.getIdRestaurant());
         existingUtilisateur.setIdVehicule(newData.getIdVehicule());
 
         return utilisateurRepository.save(existingUtilisateur);
