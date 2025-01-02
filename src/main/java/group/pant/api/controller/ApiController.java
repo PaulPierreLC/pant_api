@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/")
@@ -83,5 +84,11 @@ public class ApiController {
     public ResponseEntity<Plat> updatePlat(@PathVariable int id, @RequestBody Plat plat) {
         Plat updatedPlat = platService.updatePlat(id, plat);
         return ResponseEntity.ok(updatedPlat);
+    }
+
+    @PatchMapping("plats/{id}")
+    public ResponseEntity<Plat> patchPlat(@PathVariable int id, @RequestBody Map<String, Object> patch) {
+        Plat patchedPlat = platService.patchUser(id, patch);
+        return ResponseEntity.ok(patchedPlat);
     }
 }
