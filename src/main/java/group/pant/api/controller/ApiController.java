@@ -1,6 +1,8 @@
 package group.pant.api.controller;
 
+import group.pant.api.model.Plat;
 import group.pant.api.model.Utilisateur;
+import group.pant.api.service.PlatService;
 import group.pant.api.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,8 +18,11 @@ public class ApiController {
     @Autowired
     UtilisateurService utilisateurService;
 
+    @Autowired
+    PlatService platService;
+
     @GetMapping()
-    public String hello() {
+    public String accueil() {
         return "Bienvenue dans l'API de PANToplate";
     }
 
@@ -31,18 +36,6 @@ public class ApiController {
         return utilisateurService.getUtilisateurById(id);
     }
 
-    @PutMapping("utilisateur/{id}")
-    public ResponseEntity<HttpStatus> updateUtilisateur(@PathVariable int id, @RequestBody Map<String, Object> newData) {
-        utilisateurService.updateUtilisateur(id, newData);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @PatchMapping("utilisateur/{id}")
-    public ResponseEntity<HttpStatus> patchUtilisateur(@PathVariable int id, @RequestBody Utilisateur utilisateur) {
-        utilisateurService.changeUtilisateur(utilisateur);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
     @PostMapping("utilisateurs")
     public Utilisateur addUtilisateur(@RequestBody Utilisateur utilisateur) {
         return utilisateurService.saveUtilisateur(utilisateur);
@@ -52,5 +45,28 @@ public class ApiController {
     public String deleteUtilisateur(@PathVariable int id) {
         utilisateurService.deleteUtilisateur(id);
         return "Utilisateur deleted";
+    }
+
+//    @PutMapping("utilisateur/{id}")
+//    public ResponseEntity<HttpStatus> updateUtilisateur(@PathVariable int id, @RequestBody Map<String, Object> newData) {
+//        utilisateurService.updateUtilisateur(id, newData);
+//        return ResponseEntity.ok(HttpStatus.OK);
+//    }
+//
+//    @PatchMapping("utilisateur/{id}")
+//    public ResponseEntity<HttpStatus> patchUtilisateur(@PathVariable int id, @RequestBody Utilisateur utilisateur) {
+//        utilisateurService.changeUtilisateur(utilisateur);
+//        return ResponseEntity.ok(HttpStatus.OK);
+//    }
+
+
+    @GetMapping("plats")
+    public List<Plat> getPlats() {
+        return platService.getAllPlats();
+    }
+
+    @GetMapping("plats/{id}")
+    public Plat getPlat(@PathVariable int id) {
+        return platService.getPlatById(id);
     }
 }
