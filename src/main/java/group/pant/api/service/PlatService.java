@@ -42,7 +42,7 @@ public class PlatService {
         return platRepository.save(plat);
     }
 
-    public Plat patchUser(int id, Map<String, Object> patch) {
+    public Plat patchPlat(int id, Map<String, Object> patch) {
         Plat existingPlat = platRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Plat not found"));
 
