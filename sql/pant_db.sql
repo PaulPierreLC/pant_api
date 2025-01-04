@@ -955,18 +955,18 @@ INSERT INTO `pant_db`.`utilisateur_adresses` (`id_utilisateur`, `id_adresse`, `d
     (21, 36, FALSE);
 
 INSERT INTO `pant_db`.`restaurant` (`nom`, `telephone`, `capacite`, `photo`, `id_adresse`, `id_restaurateur`) VALUES
-    ('Le Gourmet', '0298765432', 50, 'photo_gourmet.jpg', 41, 1),
-    ('Bistro Parisien', '0298765433', 30, 'photo_bistro_parisien.jpg', 42, 5),
-    ('Pizzeria Bella', '0298765434', 70, 'photo_pizzeria_bella.jpg', 43, 8),
-    ('Sushi House', '0298765435', 40, 'photo_sushi_house.jpg', 44, 12),
-    ('Café Central', '0298765436', 60, 'photo_cafe_central.jpg', 45, 14),
-    ('Le Petit Déjeuner', '0298765437', 35, 'photo_petit_dejeuner.jpg', 46, 16),
-    ('Steak & Grill', '0298765438', 80, 'photo_steak_grill.jpg', 47, 17),
-    ('Vins & Fromages', '0298765439', 25, 'photo_vins_fromages.jpg', 48, 18),
-    ('Pâtisserie Sucrée', '0298765440', 20, 'photo_patisserie_sucree.jpg', 49, 20),
-    ('Tacos Fiesta', '0298765441', 45, 'photo_tacos_fiesta.jpg', 50, 21),
-    ('Burgers & Co.', '0298765442', 90, 'photo_burgers_co.jpg', 51, 22),
-    ('La Brasserie', '0298765443', 55, 'photo_brasserie.jpg', 52, 23);
+    ('Le Gourmet', '0298765432', 50, '001.jpg', 41, 1),
+    ('Bistro Parisien', '0298765433', 30, '002.jpg', 42, 5),
+    ('Pizzeria Bella', '0298765434', 70, '003.jpg', 43, 8),
+    ('Sushi House', '0298765435', 40, '004.jpg', 44, 12),
+    ('Café Central', '0298765436', 60, '005.jpg', 45, 14),
+    ('Le Petit Déjeuner', '0298765437', 35, '006.jpg', 46, 16),
+    ('Steak & Grill', '0298765438', 80, '007.jpg', 47, 17),
+    ('Vins & Fromages', '0298765439', 25, '008.jpg', 48, 18),
+    ('Pâtisserie Sucrée', '0298765440', 20, '009.jpg', 49, 20),
+    ('Tacos Fiesta', '0298765441', 45, '010.jpg', 50, 21),
+    ('Burgers & Co.', '0298765442', 90, '001.jpg', 51, 22),
+    ('La Brasserie', '0298765443', 55, '002.jpg', 52, 23);
 
 
 INSERT INTO `pant_db`.`cuisine` (`nom`) VALUES

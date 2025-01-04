@@ -1,8 +1,10 @@
 package group.pant.api.controller;
 
 import group.pant.api.model.Plat;
+import group.pant.api.model.Restaurant;
 import group.pant.api.model.Utilisateur;
 import group.pant.api.service.PlatService;
+import group.pant.api.service.RestaurantService;
 import group.pant.api.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +16,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/")
 public class ApiController {
-
     @Autowired
     UtilisateurService utilisateurService;
-
     @Autowired
     PlatService platService;
+    @Autowired
+    RestaurantService restaurantService;
 
     @GetMapping()
     public String accueil() {
@@ -88,7 +90,39 @@ public class ApiController {
 
     @PatchMapping("plats/{id}")
     public ResponseEntity<Plat> patchPlat(@PathVariable int id, @RequestBody Map<String, Object> patch) {
-        Plat patchedPlat = platService.patchUser(id, patch);
+        Plat patchedPlat = platService.patchPlat(id, patch);
         return ResponseEntity.ok(patchedPlat);
+    }
+
+    @GetMapping("restaurants")
+    public List<Restaurant> getRestaurants() {
+        return restaurantService.getAllRestaurants();
+    }
+
+    @GetMapping("restaurants/{id}")
+    public Restaurant getRestaurant(@PathVariable int id) {
+        return restaurantService.getRestaurantById(id);
+    }
+
+    @PostMapping("restaurants")
+    public Restaurant addRestaurant (@RequestBody Restaurant restaurant) {
+        return restaurantService.addRestaurant(restaurant);
+    }
+
+    @DeleteMapping("restaurants/{id}")
+    public String deleteRestaurant(@PathVariable int id) {
+        return restaurantService.deleteRestaurant(id);
+    }
+
+    @PutMapping("restaurants/{id}")
+    public ResponseEntity<Restaurant> updateRestaurant(@PathVariable int id, @RequestBody Restaurant restaurant) {
+        Restaurant updatedRestaurant = restaurantService.updateRestaurant(id, restaurant);
+        return ResponseEntity.ok(updatedRestaurant);
+    }
+
+    @PatchMapping("restaurants/{id}")
+    public ResponseEntity<Restaurant> patchRestaurant(@PathVariable int id, @RequestBody Map<String, Object> patch) {
+        Restaurant patchedRestaurant = restaurantService.patchRestaurant(id, patch);
+        return ResponseEntity.ok(patchedRestaurant);
     }
 }
