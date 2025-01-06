@@ -3,7 +3,6 @@ package group.pant.api.service;
 import group.pant.api.model.Cuisine;
 import group.pant.api.repository.CuisineRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.Map;
 
 @Service
 public class CuisineService {
-    @Autowired
-    private CuisineRepository cuisineRepository;
+    private final CuisineRepository cuisineRepository;
+
+    public CuisineService(CuisineRepository cuisineRepository) {
+        this.cuisineRepository = cuisineRepository;
+    }
 
     public List<Cuisine> getAllCuisines() {
         return cuisineRepository.findAll();
