@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`vehicule` (
   `nom` VARCHAR(45) NOT NULL,
   `id_vehicule_type` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_vehicule_type_idx` (`id_vehicule_type` ASC) VISIBLE,
+  INDEX `id_vehicule_type_idx` (`id_vehicule_type` ASC),
   CONSTRAINT `fk_vehicule_id_vehicule_type`
     FOREIGN KEY (`id_vehicule_type`)
     REFERENCES `pant_db`.`vehicule_type` (`id`)
@@ -79,9 +79,9 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`utilisateur` (
   `id_role` INT NOT NULL,
   `id_vehicule` INT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `id_role_idx` (`id_role` ASC) VISIBLE,
-  INDEX `id_vehicule_idx` (`id_vehicule` ASC) VISIBLE,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  INDEX `id_role_idx` (`id_role` ASC),
+  INDEX `id_vehicule_idx` (`id_vehicule` ASC),
   CONSTRAINT `fk_utilisateur_id_role`
     FOREIGN KEY (`id_role`)
     REFERENCES `pant_db`.`role` (`id`)
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`adresse` (
   `latitude` DOUBLE NULL,
   `id_ville` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_ville_idx` (`id_ville` ASC) VISIBLE,
+  INDEX `id_ville_idx` (`id_ville` ASC),
   CONSTRAINT `fk_adresse_id_ville`
     FOREIGN KEY (`id_ville`)
     REFERENCES `pant_db`.`ville` (`id`)
@@ -146,8 +146,8 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`restaurant` (
   `id_adresse` INT NULL,
   `id_restaurateur` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_adresse_idx` (`id_adresse` ASC) VISIBLE,
-  INDEX `fk_restaurant_id_restaurateur_idx` (`id_restaurateur` ASC) VISIBLE,
+  INDEX `id_adresse_idx` (`id_adresse` ASC),
+  INDEX `fk_restaurant_id_restaurateur_idx` (`id_restaurateur` ASC),
   CONSTRAINT `fk_restaurant_id_adresse`
     FOREIGN KEY (`id_adresse`)
     REFERENCES `pant_db`.`adresse` (`id`)
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`paiement` (
   `etat` BOOLEAN NOT NULL,
   `id_methode_paiement` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_methode_paiement_idx` (`id_methode_paiement` ASC) VISIBLE,
+  INDEX `id_methode_paiement_idx` (`id_methode_paiement` ASC),
   CONSTRAINT `fk_paiement_id_methode_paiement`
     FOREIGN KEY (`id_methode_paiement`)
     REFERENCES `pant_db`.`paiement_type` (`id`)
@@ -205,10 +205,10 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`commande` (
   `id_utilisateur_livreur` INT NULL,
   `id_adresse` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_paiement_idx` (`id_paiement` ASC) VISIBLE,
-  INDEX `id_utilisateur_livreur_idx` (`id_utilisateur_livreur` ASC) VISIBLE,
-  INDEX `id_utilisateur_client_idx` (`id_utilisateur_client` ASC) VISIBLE,
-  INDEX `id_adresse_idx` (`id_adresse` ASC) VISIBLE,
+  INDEX `id_paiement_idx` (`id_paiement` ASC),
+  INDEX `id_utilisateur_livreur_idx` (`id_utilisateur_livreur` ASC),
+  INDEX `id_utilisateur_client_idx` (`id_utilisateur_client` ASC),
+  INDEX `id_adresse_idx` (`id_adresse` ASC),
   CONSTRAINT `fk_commande_id_paiement`
     FOREIGN KEY (`id_paiement`)
     REFERENCES `pant_db`.`paiement` (`id`)
@@ -247,9 +247,9 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`avis` (
   `id_utilisateur` INT NULL,
   `id_commande` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_restaurant_idx` (`id_restaurant` ASC) VISIBLE,
-  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC) VISIBLE,
-  INDEX `id_commande_idx` (`id_commande` ASC) VISIBLE,
+  INDEX `id_restaurant_idx` (`id_restaurant` ASC),
+  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC),
+  INDEX `id_commande_idx` (`id_commande` ASC),
   CONSTRAINT `fk_avis_id_restaurant`
     FOREIGN KEY (`id_restaurant`)
     REFERENCES `pant_db`.`restaurant` (`id`)
@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`plat` (
   `photo` VARCHAR(45) NULL,
   `id_restaurant` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_restaurant_idx` (`id_restaurant` ASC) VISIBLE,
+  INDEX `id_restaurant_idx` (`id_restaurant` ASC),
   CONSTRAINT `fk_plat_id_restaurant`
     FOREIGN KEY (`id_restaurant`)
     REFERENCES `pant_db`.`restaurant` (`id`)
@@ -327,8 +327,8 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`commande_detail` (
   `id_plat` INT NOT NULL,
   `quantite` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_commande_idx` (`id_commande` ASC) VISIBLE,
-  INDEX `id_plat_idx` (`id_plat` ASC) VISIBLE,
+  INDEX `id_commande_idx` (`id_commande` ASC),
+  INDEX `id_plat_idx` (`id_plat` ASC),
   CONSTRAINT `fk_commande_detail_id_commande`
     FOREIGN KEY (`id_commande`)
     REFERENCES `pant_db`.`commande` (`id`)
@@ -355,8 +355,8 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`reserveration` (
   `couverts` INT NOT NULL,
   `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC) VISIBLE,
-  INDEX `id_restaurant_idx` (`id_restaurant` ASC) VISIBLE,
+  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC),
+  INDEX `id_restaurant_idx` (`id_restaurant` ASC),
   CONSTRAINT `fk_reservation_id_utilisateur`
     FOREIGN KEY (`id_utilisateur`)
     REFERENCES `pant_db`.`utilisateur` (`id`)
@@ -380,7 +380,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`utilisateur_regimes` (
   `id_utilisateur` INT NOT NULL,
   `id_regime` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC) VISIBLE,
+  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC),
   CONSTRAINT `fk_utilisateur_regimes_id_regime`
     FOREIGN KEY (`id_regime`)
     REFERENCES `pant_db`.`regime` (`id`)
@@ -404,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`plat_regimes` (
   `id_plat` INT NOT NULL,
   `id_regime` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_plat_idx` (`id_plat` ASC) VISIBLE,
+  INDEX `id_plat_idx` (`id_plat` ASC),
   CONSTRAINT `fk_plat_regimes_id_regime`
     FOREIGN KEY (`id_regime`)
     REFERENCES `pant_db`.`regime` (`id`)
@@ -428,7 +428,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`plat_cuisines` (
   `id_plat` INT NOT NULL,
   `id_cuisine` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_plat_idx` (`id_plat` ASC) VISIBLE,
+  INDEX `id_plat_idx` (`id_plat` ASC),
   CONSTRAINT `fk_plat_cuisines_id_cuisine`
     FOREIGN KEY (`id_cuisine`)
     REFERENCES `pant_db`.`cuisine` (`id`)
@@ -453,7 +453,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`rapport` (
   `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `id_utilisateur` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC) VISIBLE,
+  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC),
   CONSTRAINT `fk_rapport_id_utilisateur`
     FOREIGN KEY (`id_utilisateur`)
     REFERENCES `pant_db`.`utilisateur` (`id`)
@@ -487,8 +487,8 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`notification` (
   `lu` BOOLEAN NOT NULL,
   `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `fk_notification_id_utilisateur_idx` (`id_utilisateur` ASC) VISIBLE,
-  INDEX `fk_notification_id_notification_type_idx` (`id_notification_type` ASC) VISIBLE,
+  INDEX `fk_notification_id_utilisateur_idx` (`id_utilisateur` ASC),
+  INDEX `fk_notification_id_notification_type_idx` (`id_notification_type` ASC),
   CONSTRAINT `fk_notification_id_utilisateur`
     FOREIGN KEY (`id_utilisateur`)
     REFERENCES `pant_db`.`utilisateur` (`id`)
@@ -513,7 +513,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`utilisateur_adresses` (
   `id_adresse` INT NOT NULL,
   `defaut` BOOLEAN NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_adresse_idx` (`id_adresse` ASC) VISIBLE,
+  INDEX `id_adresse_idx` (`id_adresse` ASC),
   CONSTRAINT `fk_utilisateur_adresses_id_utilisateur`
     FOREIGN KEY (`id_utilisateur`)
     REFERENCES `pant_db`.`utilisateur` (`id`)
@@ -569,8 +569,8 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`log` (
   `id_action` INT NULL,
   `id_utilisateur` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_action_idx` (`id_action` ASC) VISIBLE,
-  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC) VISIBLE,
+  INDEX `id_action_idx` (`id_action` ASC),
+  INDEX `id_utilisateur_idx` (`id_utilisateur` ASC),
   CONSTRAINT `fk_log_id_action`
     FOREIGN KEY (`id_action`)
     REFERENCES `pant_db`.`action` (`id`)
@@ -610,7 +610,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`commande_statuts` (
   `longitude` DOUBLE NULL,
   `lattitude` DOUBLE NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_statut_idx` (`id_statut` ASC) VISIBLE,
+  INDEX `id_statut_idx` (`id_statut` ASC),
   CONSTRAINT `fk_commande_statuts_id_commande`
     FOREIGN KEY (`id_commande`)
     REFERENCES `pant_db`.`commande` (`id`)
@@ -642,10 +642,10 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`offre` (
   `id_plat` INT NULL,
   `id_restaurant` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_commande_idx` (`id_commande` ASC) VISIBLE,
-  INDEX `id_utilistateur_idx` (`id_utilisateur` ASC) VISIBLE,
-  INDEX `id_plat_idx` (`id_plat` ASC) VISIBLE,
-  INDEX `id_restaurant_idx` (`id_restaurant` ASC) VISIBLE,
+  INDEX `id_commande_idx` (`id_commande` ASC),
+  INDEX `id_utilistateur_idx` (`id_utilisateur` ASC),
+  INDEX `id_plat_idx` (`id_plat` ASC),
+  INDEX `id_restaurant_idx` (`id_restaurant` ASC),
   CONSTRAINT `fk_offre_id_commande`
     FOREIGN KEY (`id_commande`)
     REFERENCES `pant_db`.`commande` (`id`)
@@ -693,7 +693,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`plat_promotions` (
   `id_plat` INT NOT NULL,
   `id_promotion` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_promotion_idx` (`id_promotion` ASC) VISIBLE,
+  INDEX `id_promotion_idx` (`id_promotion` ASC),
   CONSTRAINT `fk_plat_promotions_id_plat`
     FOREIGN KEY (`id_plat`)
     REFERENCES `pant_db`.`plat` (`id`)
@@ -717,7 +717,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`commande_offres` (
   `id_commande` INT NOT NULL,
   `id_offre` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `id_offre_idx` (`id_offre` ASC) VISIBLE,
+  INDEX `id_offre_idx` (`id_offre` ASC),
   CONSTRAINT `fk_commande_offres_id_commande`
     FOREIGN KEY (`id_commande`)
     REFERENCES `pant_db`.`commande` (`id`)
