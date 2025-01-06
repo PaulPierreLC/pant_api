@@ -6,7 +6,7 @@ import group.pant.api.model.Ville;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.UtilisateurService;
 import group.pant.api.service.VilleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,16 +15,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/")
+@RequiredArgsConstructor
+
 public class ApiController {
 
-    @Autowired
-    UtilisateurService utilisateurService;
-
-    @Autowired
-    PlatService platService;
-
-    @Autowired
-    VilleService villeService;
+    private final UtilisateurService utilisateurService;
+    private final PlatService platService;
+    private final VilleService villeService;
 
     @GetMapping()
     public String accueil() {
@@ -51,19 +48,6 @@ public class ApiController {
         utilisateurService.deleteUtilisateur(id);
         return "Utilisateur deleted";
     }
-
-//    @PutMapping("utilisateur/{id}")
-//    public ResponseEntity<HttpStatus> updateUtilisateur(@PathVariable int id, @RequestBody Map<String, Object> newData) {
-//        utilisateurService.updateUtilisateur(id, newData);
-//        return ResponseEntity.ok(HttpStatus.OK);
-//    }
-//
-//    @PatchMapping("utilisateur/{id}")
-//    public ResponseEntity<HttpStatus> patchUtilisateur(@PathVariable int id, @RequestBody Utilisateur utilisateur) {
-//        utilisateurService.changeUtilisateur(utilisateur);
-//        return ResponseEntity.ok(HttpStatus.OK);
-//    }
-
 
     @GetMapping("plats")
     public List<Plat> getPlats() {

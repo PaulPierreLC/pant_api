@@ -3,41 +3,46 @@ package group.pant.api.service;
 import group.pant.api.model.Ville;
 import group.pant.api.repository.VilleRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
+@Service
+@RequiredArgsConstructor
+
 public class VilleService {
-    @Autowired
-    private VilleRepository VilleRepository;
+
+    private final VilleRepository villeRepository;
+
 
     public List<Ville> getAllVilles() {
-        return VilleRepository.findAll();
+        return villeRepository.findAll();
     }
 
     public Ville getVilleById(int id) {
-        return VilleRepository.findById(id)
+        return villeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ville with id " + id + " not found"));
     }
 
     public Ville addVille(Ville ville) {
-        VilleRepository.save(ville);
+        villeRepository.save(ville);
         return ville;
     }
 
     public String deleteVilleById(int id) {
-        VilleRepository.deleteById(id);
+        villeRepository.deleteById(id);
         return "Delete Plat";
     }
 
     public Ville updateVille(int id, Ville ville) {
         ville.setId(id);
-        return VilleRepository.save(ville);
+        return villeRepository.save(ville);
     }
 
     public Ville patchVille(int id, Map<String, Object> patch) {
-        Ville existingVille = VilleRepository.findById(id)
+        Ville existingVille = villeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ville not found"));
 
         patch.forEach((String key, Object value) -> {
@@ -53,7 +58,7 @@ public class VilleService {
             }
         });
 
-        return VilleRepository.save(existingVille);
+        return villeRepository.save(existingVille);
     }
 
 
