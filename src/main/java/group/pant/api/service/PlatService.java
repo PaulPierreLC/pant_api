@@ -5,20 +5,17 @@ import group.pant.api.model.Restaurant;
 import group.pant.api.repository.PlatRepository;
 import group.pant.api.repository.RestaurantRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class PlatService {
     private final PlatRepository platRepository;
     private final RestaurantRepository restaurantRepository;
-
-    public PlatService(PlatRepository platRepository, RestaurantRepository restaurantRepository) {
-        this.platRepository = platRepository;
-        this.restaurantRepository = restaurantRepository;
-    }
 
     public List<Plat> getAllPlats() {
         return platRepository.findAll();

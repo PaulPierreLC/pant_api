@@ -3,18 +3,16 @@ package group.pant.api.service;
 import group.pant.api.model.Cuisine;
 import group.pant.api.repository.CuisineRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class CuisineService {
     private final CuisineRepository cuisineRepository;
-
-    public CuisineService(CuisineRepository cuisineRepository) {
-        this.cuisineRepository = cuisineRepository;
-    }
 
     public List<Cuisine> getAllCuisines() {
         return cuisineRepository.findAll();

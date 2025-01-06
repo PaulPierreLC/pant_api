@@ -3,17 +3,15 @@ package group.pant.api.service;
 import group.pant.api.model.Utilisateur;
 import group.pant.api.repository.UtilisateurRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
-
-    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
-        this.utilisateurRepository = utilisateurRepository;
-    }
 
     public List<Utilisateur> getAllUtilisateurs() {
         return utilisateurRepository.findAll();

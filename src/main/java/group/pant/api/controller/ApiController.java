@@ -8,6 +8,7 @@ import group.pant.api.service.CuisineService;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.RestaurantService;
 import group.pant.api.service.UtilisateurService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,24 +17,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/")
+@RequiredArgsConstructor
 public class ApiController {
-
     private final UtilisateurService utilisateurService;
     private final PlatService platService;
     private final RestaurantService restaurantService;
     private final CuisineService cuisineService;
-
-    public ApiController(
-            UtilisateurService utilisateurService,
-            PlatService platService,
-            RestaurantService restaurantService,
-            CuisineService cuisineService
-    ) {
-        this.utilisateurService = utilisateurService;
-        this.platService = platService;
-        this.restaurantService = restaurantService;
-        this.cuisineService = cuisineService;
-    }
 
     @GetMapping()
     public String accueil() {
