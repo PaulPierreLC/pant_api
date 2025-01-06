@@ -1,8 +1,10 @@
 package group.pant.api.controller;
 
+import group.pant.api.model.Cuisine;
 import group.pant.api.model.Plat;
 import group.pant.api.model.Restaurant;
 import group.pant.api.model.Utilisateur;
+import group.pant.api.service.CuisineService;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.RestaurantService;
 import group.pant.api.service.UtilisateurService;
@@ -18,10 +20,6 @@ import java.util.Map;
 public class ApiController {
     @Autowired
     UtilisateurService utilisateurService;
-    @Autowired
-    PlatService platService;
-    @Autowired
-    RestaurantService restaurantService;
 
     @GetMapping()
     public String accueil() {
@@ -62,6 +60,9 @@ public class ApiController {
 //    }
 
 
+    @Autowired
+    PlatService platService;
+
     @GetMapping("plats")
     public List<Plat> getPlats() {
         return platService.getAllPlats();
@@ -94,6 +95,9 @@ public class ApiController {
         return ResponseEntity.ok(patchedPlat);
     }
 
+    @Autowired
+    RestaurantService restaurantService;
+
     @GetMapping("restaurants")
     public List<Restaurant> getRestaurants() {
         return restaurantService.getAllRestaurants();
@@ -124,5 +128,40 @@ public class ApiController {
     public ResponseEntity<Restaurant> patchRestaurant(@PathVariable int id, @RequestBody Map<String, Object> patch) {
         Restaurant patchedRestaurant = restaurantService.patchRestaurant(id, patch);
         return ResponseEntity.ok(patchedRestaurant);
+    }
+
+    @Autowired
+    CuisineService cuisineService;
+
+    @GetMapping("cuisines")
+    public List<Cuisine> getCuisines() {
+        return cuisineService.getAllCuisines();
+    }
+
+    @GetMapping("cuisines/{id}")
+    public Cuisine getCuisine(@PathVariable int id) {
+        return cuisineService.getCuisineById(id);
+    }
+
+    @PostMapping("cuisines")
+    public Cuisine addCuisine (@RequestBody Cuisine cuisine) {
+        return cuisineService.addCuisine(cuisine);
+    }
+
+    @DeleteMapping("cuisines/{id}")
+    public String deleteCuisine(@PathVariable int id) {
+        return cuisineService.deleteCuisine(id);
+    }
+
+    @PutMapping("cuisines/{id}")
+    public ResponseEntity<Cuisine> updateCuisine(@PathVariable int id, @RequestBody Cuisine cuisine) {
+        Cuisine updatedCuisine = cuisineService.updateCuisine(id, cuisine);
+        return ResponseEntity.ok(updatedCuisine);
+    }
+
+    @PatchMapping("cuisines/{id}")
+    public ResponseEntity<Cuisine> patchCuisine(@PathVariable int id, @RequestBody Map<String, Object> patch) {
+        Cuisine patchedCuisine = cuisineService.patchCuisine(id, patch);
+        return ResponseEntity.ok(patchedCuisine);
     }
 }
