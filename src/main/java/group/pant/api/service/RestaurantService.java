@@ -7,7 +7,6 @@ import group.pant.api.repository.AdresseRepository;
 import group.pant.api.repository.RestaurantRepository;
 import group.pant.api.repository.UtilisateurRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,12 +15,19 @@ import java.time.Instant;
 
 @Service
 public class RestaurantService {
-    @Autowired
-    private RestaurantRepository restaurantRepository;
-    @Autowired
-    private AdresseRepository adresseRepository;
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final AdresseRepository adresseRepository;
+    private final UtilisateurRepository utilisateurRepository;
+
+    public RestaurantService(
+        RestaurantRepository restaurantRepository,
+        AdresseRepository adresseRepository,
+        UtilisateurRepository utilisateurRepository
+    ) {
+        this.restaurantRepository = restaurantRepository;
+        this.adresseRepository = adresseRepository;
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
     public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();

@@ -8,7 +8,6 @@ import group.pant.api.service.CuisineService;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.RestaurantService;
 import group.pant.api.service.UtilisateurService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +17,23 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/")
 public class ApiController {
-    @Autowired
-    UtilisateurService utilisateurService;
+
+    private final UtilisateurService utilisateurService;
+    private final PlatService platService;
+    private final RestaurantService restaurantService;
+    private final CuisineService cuisineService;
+
+    public ApiController(
+            UtilisateurService utilisateurService,
+            PlatService platService,
+            RestaurantService restaurantService,
+            CuisineService cuisineService
+    ) {
+        this.utilisateurService = utilisateurService;
+        this.platService = platService;
+        this.restaurantService = restaurantService;
+        this.cuisineService = cuisineService;
+    }
 
     @GetMapping()
     public String accueil() {
@@ -47,22 +61,6 @@ public class ApiController {
         return "Utilisateur deleted";
     }
 
-//    @PutMapping("utilisateur/{id}")
-//    public ResponseEntity<HttpStatus> updateUtilisateur(@PathVariable int id, @RequestBody Map<String, Object> newData) {
-//        utilisateurService.updateUtilisateur(id, newData);
-//        return ResponseEntity.ok(HttpStatus.OK);
-//    }
-//
-//    @PatchMapping("utilisateur/{id}")
-//    public ResponseEntity<HttpStatus> patchUtilisateur(@PathVariable int id, @RequestBody Utilisateur utilisateur) {
-//        utilisateurService.changeUtilisateur(utilisateur);
-//        return ResponseEntity.ok(HttpStatus.OK);
-//    }
-
-
-    @Autowired
-    PlatService platService;
-
     @GetMapping("plats")
     public List<Plat> getPlats() {
         return platService.getAllPlats();
@@ -74,7 +72,7 @@ public class ApiController {
     }
 
     @PostMapping("plats")
-    public Plat addPlat (@RequestBody Plat plat) {
+    public Plat addPlat(@RequestBody Plat plat) {
         return platService.addPlat(plat);
     }
 
@@ -95,9 +93,6 @@ public class ApiController {
         return ResponseEntity.ok(patchedPlat);
     }
 
-    @Autowired
-    RestaurantService restaurantService;
-
     @GetMapping("restaurants")
     public List<Restaurant> getRestaurants() {
         return restaurantService.getAllRestaurants();
@@ -109,7 +104,7 @@ public class ApiController {
     }
 
     @PostMapping("restaurants")
-    public Restaurant addRestaurant (@RequestBody Restaurant restaurant) {
+    public Restaurant addRestaurant(@RequestBody Restaurant restaurant) {
         return restaurantService.addRestaurant(restaurant);
     }
 
@@ -130,9 +125,6 @@ public class ApiController {
         return ResponseEntity.ok(patchedRestaurant);
     }
 
-    @Autowired
-    CuisineService cuisineService;
-
     @GetMapping("cuisines")
     public List<Cuisine> getCuisines() {
         return cuisineService.getAllCuisines();
@@ -144,7 +136,7 @@ public class ApiController {
     }
 
     @PostMapping("cuisines")
-    public Cuisine addCuisine (@RequestBody Cuisine cuisine) {
+    public Cuisine addCuisine(@RequestBody Cuisine cuisine) {
         return cuisineService.addCuisine(cuisine);
     }
 
