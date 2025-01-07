@@ -25,6 +25,7 @@ import group.pant.api.service.PlatService;
 import group.pant.api.service.RestaurantService;
 import group.pant.api.service.UtilisateurService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -173,19 +174,15 @@ public class ApiController {
 
     //Action
 
-        @GetMapping("actions")
+    @GetMapping("actions")
     public List<Action> getActions() {
         return actionService.getAllActions();
     }
 
     @GetMapping("actions/{id}")
     public Action getAction(@PathVariable int id) {
-        return actionService.getActionById(id);
-    }
-
-    @PostMapping("actions")
-    public Action addAction(@RequestBody Action action) {
-        return actionService.addAction(action);
+        return actionService.getActionById(id)
+                .orElseThrow(() -> new RuntimeException("Action not found"));
     }
 
     @PutMapping("actions/{id}")
@@ -193,12 +190,21 @@ public class ApiController {
         Action updatedAction = actionService.updateAction(id, action);
         return ResponseEntity.ok(updatedAction);
     }
+    @PatchMapping("actions/{id}")
+    public ResponseEntity<Action> patchAction(@PathVariable int id, @RequestBody Map<String, Object> patch) {
+        Action patchedAction = actionService.patchAction(id, patch);
+        return ResponseEntity.ok(patchedAction);
+    }
+
+    @PostMapping("actions")
+    public Action createAction(@RequestBody Action action) {
+        return actionService.createAction(action);
+    }
 
     @DeleteMapping("actions/{id}")
     public String deleteAction(@PathVariable int id) {
-        return actionService.deleteAction(id);
+        return actionService.deleteAction(id); // Now it returns a String
     }
-
     // Adresse
 
     @GetMapping("adresses")
@@ -208,12 +214,19 @@ public class ApiController {
 
     @GetMapping("adresses/{id}")
     public Adresse getAdresse(@PathVariable int id) {
-        return adresseService.getAdresseById(id);
+        return adresseService.getAdresseById(id)
+                .orElseThrow(() -> new RuntimeException("Adresse not found"));
     }
 
     @PostMapping("adresses")
     public Adresse addAdresse(@RequestBody Adresse adresse) {
-        return adresseService.addAdresse(adresse);
+        return adresseService.createAdresse(adresse);
+    }
+
+    @PatchMapping("adresses/{id}")
+    public ResponseEntity<Adresse> patchAdresse(@PathVariable Integer id, @RequestBody Map<String, Object> patch) {
+        Adresse patchedAdresse = adresseService.patchAdresse(id, patch);
+        return ResponseEntity.ok(patchedAdresse);
     }
 
     @PutMapping("adresses/{id}")
@@ -223,39 +236,46 @@ public class ApiController {
     }
 
     @DeleteMapping("adresses/{id}")
-    public String deleteAdresse(@PathVariable int id) {
-        return adresseService.deleteAdresse(id);
+    public ResponseEntity<String> deleteAdresse(@PathVariable int id) {
+        adresseService.deleteAdresse(id); // No need to return anything from service method
+        return ResponseEntity.ok("Adresse deleted"); // You return a ResponseEntity with a String message
     }
 
     @GetMapping("avis")
-public List<Avis> getAvis() {
+    public List<Avis> getAvis() {
     return avisService.getAllAvis();
 }
 
-@GetMapping("avis/{id}")
-public Avis getAvis(@PathVariable int id) {
-    return avisService.getAvisById(id);
-}
+    @GetMapping("avis/{id}")
+    public Avis getAvis(@PathVariable Integer id) {
+        // Use Optional to retrieve the Avis, throwing an exception if not found
+        return avisService.getAvisById(id).orElseThrow(() -> new RuntimeException("Avis not found"));
+    }
+    @PostMapping("avis")
+    public Avis createAvis(@RequestBody Avis avis) {
+        return avisService.createAvis(avis);
+    }
 
-@PostMapping("avis")
-public Avis addAvis(@RequestBody Avis avis) {
-    return avisService.addAvis(avis);
-}
-
-@PutMapping("avis/{id}")
-public ResponseEntity<Avis> updateAvis(@PathVariable int id, @RequestBody Avis avis) {
+    @PutMapping("avis/{id}")
+    public ResponseEntity<Avis> updateAvis(@PathVariable int id, @RequestBody Avis avis) {
     Avis updatedAvis = avisService.updateAvis(id, avis);
     return ResponseEntity.ok(updatedAvis);
-}
+    }
 
-@DeleteMapping("avis/{id}")
-public String deleteAvis(@PathVariable int id) {
-    return avisService.deleteAvis(id);
-}
+    @DeleteMapping("avis/{id}")
+    public ResponseEntity<String> deleteAvis(@PathVariable Integer id) {
+        avisService.deleteAvis(id);  // Assuming this method is void
+        return ResponseEntity.ok("Avis deleted");  // Returning ResponseEntity with success message
+    }
+
+    @PatchMapping("avis/{id}")
+    public Avis patchAvis(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+        return avisService.patchAvis(id, updates);
+    }
 
 // Reservation
 
-@GetMapping("reservations")
+    @GetMapping("reservations")
     public List<Reservation> getReservations() {
         return reservationService.getAllReservations();
     }
@@ -266,8 +286,15 @@ public String deleteAvis(@PathVariable int id) {
     }
 
     @PostMapping("reservations")
-    public Reservation addReservation(@RequestBody Reservation reservation) {
-        return reservationService.addReservation(reservation);
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        Reservation createdReservation = reservationService.createReservation(reservation);
+        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("reservations/{id}")
+    public ResponseEntity<Reservation> patchReservation(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+        Reservation updatedReservation = reservationService.patchReservation(id, updates);
+        return ResponseEntity.ok(updatedReservation);
     }
 
     @PutMapping("reservations/{id}")
@@ -277,9 +304,11 @@ public String deleteAvis(@PathVariable int id) {
     }
 
     @DeleteMapping("reservations/{id}")
-    public String deleteReservation(@PathVariable int id) {
-        return reservationService.deleteReservation(id);
+    public ResponseEntity<String> deleteReservation(@PathVariable int id) {
+        reservationService.deleteReservation(id);
+        return ResponseEntity.ok("Reservation deleted");
     }
+
 
     // Role
     @GetMapping("roles")
@@ -289,12 +318,24 @@ public String deleteAvis(@PathVariable int id) {
 
     @GetMapping("roles/{id}")
     public Role getRole(@PathVariable int id) {
-        return roleService.getRoleById(id);
+        return roleService.getRoleById(id)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
     }
 
     @PostMapping("roles")
-    public Role addRole(@RequestBody Role role) {
-        return roleService.addRole(role);
+    public ResponseEntity<Role> createRole(@RequestBody Role role) {
+        Role createdRole = roleService.createRole(role);
+        return new ResponseEntity<>(createdRole, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("roles/{id}")
+    public ResponseEntity<Role> patchRole(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+        try {
+            Role updatedRole = roleService.patchRole(id, updates);
+            return new ResponseEntity<>(updatedRole, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("roles/{id}")
@@ -305,8 +346,10 @@ public String deleteAvis(@PathVariable int id) {
 
     @DeleteMapping("roles/{id}")
     public String deleteRole(@PathVariable int id) {
-        return roleService.deleteRole(id);
+        roleService.deleteRole(id);  // Perform the deletion
+        return "Role deleted";  // Return a success message
     }
+
 
     // Statut
 
@@ -317,12 +360,23 @@ public String deleteAvis(@PathVariable int id) {
 
     @GetMapping("statuts/{id}")
     public Statut getStatut(@PathVariable int id) {
-        return statutService.getStatutById(id);
+        return statutService.getStatutById(id)
+                .orElseThrow(() -> new RuntimeException("Statut not found"));
     }
 
+
     @PostMapping("statuts")
-    public Statut addStatut(@RequestBody Statut statut) {
-        return statutService.addStatut(statut);
+    public ResponseEntity<Statut> createStatut(@RequestBody Statut statut) {
+        Statut createdStatut = statutService.createStatut(statut);
+        return new ResponseEntity<>(createdStatut, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("statuts/{id}")
+    public ResponseEntity<Statut> patchStatut(
+            @PathVariable Integer id,
+            @RequestBody Map<String, Object> updates) {
+        Statut updatedStatut = statutService.patchStatut(id, updates);
+        return ResponseEntity.ok(updatedStatut);
     }
 
     @PutMapping("statuts/{id}")
@@ -333,8 +387,10 @@ public String deleteAvis(@PathVariable int id) {
 
     @DeleteMapping("statuts/{id}")
     public String deleteStatut(@PathVariable int id) {
-        return statutService.deleteStatut(id);
+        statutService.deleteStatut(id);  // Calls the service method that doesn't return anything
+        return "Statut deleted";  // Return a success message
     }
+
 
     // Vehicule
 
@@ -343,17 +399,29 @@ public List<Vehicule> getVehicules() {
     return vehiculeService.getAllVehicules();
 }
 
-@GetMapping("vehicules/{id}")
-public Vehicule getVehicule(@PathVariable int id) {
-    return vehiculeService.getVehiculeById(id);
-}
+    @GetMapping("vehicules/{id}")
+    public ResponseEntity<Vehicule> getVehicule(@PathVariable int id) {
+        Vehicule vehicule = vehiculeService.getVehiculeById(id)
+                .orElseThrow(() -> new RuntimeException("Véhicule introuvable"));
+        return ResponseEntity.ok(vehicule);
+    }
 
-@PostMapping("vehicules")
-public Vehicule addVehicule(@RequestBody Vehicule vehicule) {
-    return vehiculeService.addVehicule(vehicule);
-}
 
-@PutMapping("vehicules/{id}")
+    @PostMapping("vehicules")
+    public ResponseEntity<Vehicule> createVehicule(@RequestBody Vehicule vehicule) {
+        Vehicule createdVehicule = vehiculeService.createVehicule(vehicule);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdVehicule);
+    }
+
+    @PatchMapping("vehicules/{id}")
+    public ResponseEntity<Vehicule> patchVehicule(
+            @PathVariable Integer id,
+            @RequestBody Map<String, Object> updates) {
+        Vehicule patchedVehicule = vehiculeService.patchVehicule(id, updates);
+        return ResponseEntity.ok(patchedVehicule);
+    }
+
+    @PutMapping("vehicules/{id}")
 public ResponseEntity<Vehicule> updateVehicule(@PathVariable int id, @RequestBody Vehicule vehicule) {
     Vehicule updatedVehicule = vehiculeService.updateVehicule(id, vehicule);
     return ResponseEntity.ok(updatedVehicule);
@@ -371,15 +439,21 @@ public List<VehiculeType> getVehiculeTypes() {
     return vehiculeTypeService.getAllVehiculeTypes();
 }
 
-@GetMapping("vehiculetypes/{id}")
-public VehiculeType getVehiculeType(@PathVariable int id) {
-    return vehiculeTypeService.getVehiculeTypeById(id);
-}
+    @GetMapping("vehiculetypes/{id}")
+    public VehiculeType getVehiculeType(@PathVariable int id) {
+        return vehiculeTypeService.getVehiculeTypeById(id)
+                .orElseThrow(() -> new RuntimeException("VehiculeType not found"));
+    }
 
 @PostMapping("vehiculetypes")
 public VehiculeType addVehiculeType(@RequestBody VehiculeType vehiculeType) {
-    return vehiculeTypeService.addVehiculeType(vehiculeType);
-}
+        return vehiculeTypeService.createVehiculeType(vehiculeType);
+    }
+
+    @PatchMapping("vehiculetypes/{id}")
+    public VehiculeType patchVehiculeType(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+        return vehiculeTypeService.patchVehiculeType(id, updates);
+    }
 
 @PutMapping("vehiculetypes/{id}")
 public ResponseEntity<VehiculeType> updateVehiculeType(@PathVariable int id, @RequestBody VehiculeType vehiculeType) {
@@ -387,9 +461,10 @@ public ResponseEntity<VehiculeType> updateVehiculeType(@PathVariable int id, @Re
     return ResponseEntity.ok(updatedVehiculeType);
 }
 
-@DeleteMapping("vehiculetypes/{id}")
-public String deleteVehiculeType(@PathVariable int id) {
-    return vehiculeTypeService.deleteVehiculeType(id);
-}
+    @DeleteMapping("vehiculetypes/{id}")
+    public ResponseEntity<String> deleteVehiculeType(@PathVariable int id) {
+        vehiculeTypeService.deleteVehiculeType(id);
+        return ResponseEntity.ok("VehiculeType deleted successfully");
+    }
 
 }

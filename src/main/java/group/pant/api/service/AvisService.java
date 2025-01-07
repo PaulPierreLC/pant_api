@@ -14,49 +14,50 @@ public class AvisService {
 
     private final AvisRepository avisRepository;
 
-    // Injection par constructeur
-    public AvisService(AvisRepository avisRepository) {
-        this.avisRepository = avisRepository;
-    }
-
     // Récupérer toutes les avis
     public List<Avis> getAllAvis() {
         return avisRepository.findAll();
     }
 
-    // Récupérer une Avis par son ID
+    // Récupérer un Avis par son ID
     public Optional<Avis> getAvisById(Integer id) {
         return avisRepository.findById(id);
     }
 
-    // Créer une nouvelle avis
-    public Avis createavis(Avis avis) {
+    // Créer un nouvel avis
+    public Avis createAvis(Avis avis) {
         return avisRepository.save(avis);
     }
 
-    // Mettre à jour une avis existante
-    public Avis updateavis(Integer id, Avis avisDetails) {
+    // Mettre à jour un avis existant
+    public Avis updateAvis(Integer id, Avis avisDetails) {
         Avis avis = avisRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Avis not found"));
-        avis.setNom(avisDetails.getNom());
+        avis.setTitre(avisDetails.getTitre());  // Use setTitre instead of setNom
+        avis.setDescription(avisDetails.getDescription());
+        avis.setNote(avisDetails.getNote());
         return avisRepository.save(avis);
     }
 
-    // Supprimer une avis
-    public void deleteavis(Integer id) {
+    // Supprimer un avis
+    public void deleteAvis(Integer id) {
         Avis avis = avisRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Avis not found"));
         avisRepository.delete(avis);
     }
 
-    // Mettre à jour partiellement une avis
-    public Avis patchavis(Integer id, Map<String, Object> updates) {
+    // Mettre à jour partiellement un avis
+    public Avis patchAvis(Integer id, Map<String, Object> updates) {
         Avis avis = avisRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Avis not found"));
 
         updates.forEach((key, value) -> {
-            if ("nom".equals(key)) {
-                avis.setNom((String) value);
+            if ("titre".equals(key)) {
+                avis.setTitre((String) value);  // Use setTitre instead of setNom
+            } else if ("description".equals(key)) {
+                avis.setDescription((String) value);
+            } else if ("note".equals(key)) {
+                avis.setNote((Integer) value);
             }
         });
 

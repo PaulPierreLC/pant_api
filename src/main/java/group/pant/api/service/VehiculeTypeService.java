@@ -14,11 +14,6 @@ public class VehiculeTypeService {
 
     private final VehiculeTypeRepository vehiculeTypeRepository;
 
-    // Constructeur d'injection
-    public VehiculeTypeService(VehiculeTypeRepository vehiculeTypeRepository) {
-        this.vehiculeTypeRepository = vehiculeTypeRepository;
-    }
-
     // Récupérer tous les types de véhicules
     public List<VehiculeType> getAllVehiculeTypes() {
         return vehiculeTypeRepository.findAll();

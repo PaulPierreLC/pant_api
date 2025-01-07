@@ -14,11 +14,6 @@ public class StatutService {
 
     private final StatutRepository statutRepository;
 
-    // Injection par constructeur
-    public StatutService(StatutRepository statutRepository) {
-        this.statutRepository = statutRepository;
-    }
-
     // Récupérer tous les statuts
     public List<Statut> getAllStatuts() {
         return statutRepository.findAll();

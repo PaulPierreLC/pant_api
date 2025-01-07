@@ -14,11 +14,6 @@ public class AdresseService {
 
     private final AdresseRepository adresseRepository;
 
-    // Injection par constructeur
-    public AdresseService(AdresseRepository adresseRepository) {
-        this.adresseRepository = adresseRepository;
-    }
-
     // Récupérer toutes les adresses
     public List<Adresse> getAllAdresses() {
         return adresseRepository.findAll();

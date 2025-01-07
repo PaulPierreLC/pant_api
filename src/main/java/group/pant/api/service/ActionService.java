@@ -14,11 +14,6 @@ public class ActionService {
 
     private final ActionRepository actionRepository;
 
-    // Injection par constructeur
-    public ActionService(ActionRepository actionRepository) {
-        this.actionRepository = actionRepository;
-    }
-
     // Récupérer toutes les actions
     public List<Action> getAllActions() {
         return actionRepository.findAll();
@@ -43,10 +38,10 @@ public class ActionService {
     }
 
     // Supprimer une action
-    public void deleteAction(Integer id) {
-        Action action = actionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Action not found"));
-        actionRepository.delete(action);
+    public String deleteAction(int id) {
+        // Find and delete the action, then return a confirmation message
+        actionRepository.deleteById(id);
+        return "Action deleted successfully"; // Return a success message
     }
 
     // Mettre à jour partiellement une action
