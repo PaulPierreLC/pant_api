@@ -3,12 +3,13 @@ package group.pant.api.service;
 import group.pant.api.model.Vehicule;
 import group.pant.api.repository.VehiculeRepository;
 import org.springframework.stereotype.Service;
-
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class VehiculeService {
 
     private final VehiculeRepository vehiculeRepository;

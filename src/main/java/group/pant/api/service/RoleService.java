@@ -3,12 +3,13 @@ package group.pant.api.service;
 import group.pant.api.model.Role;
 import group.pant.api.repository.RoleRepository;
 import org.springframework.stereotype.Service;
-
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RoleService {
 
     private final RoleRepository roleRepository;

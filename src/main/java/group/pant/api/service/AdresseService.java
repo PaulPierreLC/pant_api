@@ -3,12 +3,13 @@ package group.pant.api.service;
 import group.pant.api.model.Adresse;
 import group.pant.api.repository.AdresseRepository;
 import org.springframework.stereotype.Service;
-
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AdresseService {
 
     private final AdresseRepository adresseRepository;
