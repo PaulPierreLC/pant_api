@@ -12,6 +12,7 @@ import group.pant.api.model.Role;
 import group.pant.api.model.Statut;
 import group.pant.api.model.Vehicule;
 import group.pant.api.model.VehiculeType;
+import group.pant.api.model.Log;
 import group.pant.api.service.ActionService;
 import group.pant.api.service.AdresseService;
 import group.pant.api.service.AvisService;
@@ -19,11 +20,13 @@ import group.pant.api.service.ReservationService;
 import group.pant.api.service.RoleService;
 import group.pant.api.service.StatutService;
 import group.pant.api.service.VehiculeService;
+import group.pant.api.service.LogService;
 import group.pant.api.service.VehiculeTypeService;
 import group.pant.api.service.CuisineService;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.RestaurantService;
 import group.pant.api.service.UtilisateurService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +51,8 @@ public class ApiController {
     private final StatutService statutService;
     private final VehiculeService vehiculeService;
     private final VehiculeTypeService vehiculeTypeService;
+    private final LogService logService;
+
     
 
     @GetMapping()
@@ -62,8 +67,10 @@ public class ApiController {
 
     @GetMapping("utilisateurs/{id}")
     public Utilisateur getUtilisateur(@PathVariable int id) {
-        return utilisateurService.getUtilisateurById(id);
+        return utilisateurService.getUtilisateurById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec id " + id + " non trouvé"));
     }
+
 
     @PostMapping("utilisateurs")
     public Utilisateur addUtilisateur(@RequestBody Utilisateur utilisateur) {
@@ -466,5 +473,59 @@ public ResponseEntity<VehiculeType> updateVehiculeType(@PathVariable int id, @Re
         vehiculeTypeService.deleteVehiculeType(id);
         return ResponseEntity.ok("VehiculeType deleted successfully");
     }
+
+    //Log
+
+    // Créer un nouveau log
+    @PostMapping("log")
+    public Log createLog(@RequestParam int actionId, @RequestParam int utilisateurId, @RequestBody String parametre) {
+        // Récupération de l'action
+        Action action = actionService.getActionById(actionId).orElse(null);
+        if (action == null) {
+            // Si l'action n'existe pas, retourner un message d'erreur (ou gérer selon ton besoin)
+            return null; // Ou une réponse d'erreur personnalisée
+        }
+
+        // Récupération de l'utilisateur
+        Utilisateur utilisateur = utilisateurService.getUtilisateurById(utilisateurId).orElse(null);
+        if (utilisateur == null) {
+            // Si l'utilisateur n'existe pas, retourner un message d'erreur (ou gérer selon ton besoin)
+            return null; // Ou une réponse d'erreur personnalisée
+        }
+
+        // Créer le log si les entités existent
+        return logService.addLog(action, utilisateur, parametre);
+    }
+
+    // Récupérer tous les logs
+    @GetMapping("log")
+    public List<Log> getLogs() {
+        return logService.getAllLogs();
+    }
+
+    // Récupérer un log par ID
+    @GetMapping("log/{id}")
+    public Log getLogById(@PathVariable int id) {
+        return logService.getLogById(id);
+    }
+
+    // Supprimer un log par ID
+    @DeleteMapping("log/{id}")
+    public String deleteLog(@PathVariable int id) {
+        return logService.deleteLog(id);
+    }
+
+    // Mettre à jour un log
+    @PutMapping("log/{id}")
+    public Log updateLog(@PathVariable int id, @RequestBody Log logDetails) {
+        return logService.updateLog(id, logDetails);
+    }
+
+    // Appliquer un patch à un log
+    @PatchMapping("log/{id}")
+    public Log patchLog(@PathVariable int id, @RequestBody Map<String, Object> patch) {
+        return logService.patchLog(id, patch);
+    }
+
 
 }

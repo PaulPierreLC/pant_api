@@ -5,6 +5,8 @@ import group.pant.api.repository.UtilisateurRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
+
 
 import java.util.List;
 
@@ -17,9 +19,8 @@ public class UtilisateurService {
         return utilisateurRepository.findAll();
     }
 
-    public Utilisateur getUtilisateurById(int id) {
-        return utilisateurRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Utilisateur with id " + id + " not found"));
+    public Optional<Utilisateur> getUtilisateurById(int id) {
+        return utilisateurRepository.findById(id);
     }
 
     public Utilisateur saveUtilisateur(Utilisateur utilisateur) {
