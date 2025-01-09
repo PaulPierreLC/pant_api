@@ -33,7 +33,7 @@ public class VilleService {
 
     public String deleteVilleById(int id) {
         villeRepository.deleteById(id);
-        return "Delete Plat";
+        return "Delete Ville";
     }
 
     public Ville updateVille(int id, Ville ville) {
