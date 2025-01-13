@@ -1,6 +1,7 @@
 package group.pant.api.controller;
 
 import group.pant.api.model.Cuisine;
+import group.pant.api.model.Login;
 import group.pant.api.model.Plat;
 import group.pant.api.model.Restaurant;
 import group.pant.api.model.Utilisateur;
@@ -24,6 +25,7 @@ import group.pant.api.service.CuisineService;
 import group.pant.api.service.PlatService;
 import group.pant.api.service.RestaurantService;
 import group.pant.api.service.UtilisateurService;
+import group.pant.api.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/")
@@ -48,6 +51,7 @@ public class ApiController {
     private final StatutService statutService;
     private final VehiculeService vehiculeService;
     private final VehiculeTypeService vehiculeTypeService;
+    private final LoginService loginService;
     
 
     @GetMapping()
@@ -474,6 +478,42 @@ public class ApiController {
     public ResponseEntity<String> deleteVehiculeType(@PathVariable int id) {
         vehiculeTypeService.deleteVehiculeType(id);
         return ResponseEntity.ok("VehiculeType deleted successfully");
+    }
+
+    // Login
+
+    @GetMapping
+    public List<Login> getAllLogins() {
+        return loginService.getAllLogins();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Login> getLoginById(@PathVariable Integer id) {
+        Optional<Login> login = loginService.getLoginById(id);
+        return login.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public Login createLogin(@RequestBody Login login) {
+        return loginService.createLogin(login);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Login> updateLogin(@PathVariable Integer id, @RequestBody Login loginDetails) {
+        Login updatedLogin = loginService.updateLogin(id, loginDetails);
+        return ResponseEntity.ok(updatedLogin);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Login> patchLogin(@PathVariable Integer id, @RequestBody Login loginDetails) {
+        Login patchedLogin = loginService.patchLogin(id, loginDetails);
+        return ResponseEntity.ok(patchedLogin);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLogin(@PathVariable Integer id) {
+        loginService.deleteLogin(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

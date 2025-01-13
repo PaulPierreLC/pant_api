@@ -1,5 +1,8 @@
 package group.pant.api.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import group.pant.converter.JsonNodeConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,4 +30,8 @@ public class Login {
     @Column(name = "mot_de_passe", nullable = false, length = 45)
     private String motDePasse;
 
+    @Lob
+    @Column(name = "parametres", nullable = true)
+    @Convert(converter = JsonNodeConverter.class)
+    private JsonNode parametres;
 }
