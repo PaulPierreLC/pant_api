@@ -66,7 +66,7 @@ public class AdresseService {
             } else if ("latitude".equals(key)) {
                 adresse.setLatitude((Double) value);
             } else if ("idVille".equals(key)) {
-                adresse.setIdVille((Integer) value);
+                adresse.setId((Integer) value);
             }
         });
 
