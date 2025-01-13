@@ -81,7 +81,6 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`utilisateur` (
   `mail` VARCHAR(45) NOT NULL,
   `parametre` JSON NOT NULL,
   `points_fidelite` INT NOT NULL DEFAULT 0,
-  `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `id_role` INT NOT NULL,
   `id_vehicule` INT NULL,
   `date_creer` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
@@ -237,7 +236,6 @@ DROP TABLE IF EXISTS `pant_db`.`commande` ;
 
 CREATE TABLE IF NOT EXISTS `pant_db`.`commande` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `id_paiement` INT NULL,
   `id_utilisateur_client` INT NULL,
   `id_utilisateur_livreur` INT NULL,
@@ -282,7 +280,6 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`avis` (
   `titre` VARCHAR(45) NULL,
   `description` TEXT NULL,
   `note` INT NOT NULL,
-  `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `id_restaurant` INT NOT NULL,
   `id_utilisateur` INT NULL,
   `id_commande` INT NULL,
@@ -507,7 +504,6 @@ DROP TABLE IF EXISTS `pant_db`.`rapport` ;
 CREATE TABLE IF NOT EXISTS `pant_db`.`rapport` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `contenu` TEXT NULL,
-  `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `id_utilisateur` INT NULL,
   `date_creer` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `date_maj` DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -633,7 +629,6 @@ DROP TABLE IF EXISTS `pant_db`.`log` ;
 CREATE TABLE IF NOT EXISTS `pant_db`.`log` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `parametre` JSON NULL,
-  `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `id_action` INT NULL,
   `id_utilisateur` INT NULL,
   `date_creer` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
@@ -709,7 +704,6 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`offre` (
   `multiplicative` FLOAT NULL,
   `date_debut` DATETIME NOT NULL,
   `date_fin` DATETIME NOT NULL,
-  `date_creation` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `id_commande` INT NULL,
   `id_utilisateur` INT NULL,
   `id_plat` INT NULL,
