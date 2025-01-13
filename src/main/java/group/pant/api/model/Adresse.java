@@ -34,6 +34,6 @@ public class Adresse {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_ville", nullable = false)
-    private Ville idVille;
+    private Ville ville;
 
 }
