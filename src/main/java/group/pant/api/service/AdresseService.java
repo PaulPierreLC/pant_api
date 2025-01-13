@@ -2,6 +2,8 @@ package group.pant.api.service;
 
 import group.pant.api.model.Adresse;
 import group.pant.api.repository.AdresseRepository;
+import group.pant.api.model.Ville;
+import group.pant.api.repository.VilleRepository;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Optional;
 public class AdresseService {
 
     private final AdresseRepository adresseRepository;
+    private final VilleRepository villeRepository;
 
     // Récupérer toutes les adresses
     public List<Adresse> getAllAdresses() {
@@ -38,9 +41,18 @@ public class AdresseService {
         adresse.setComplement(adresseDetails.getComplement());
         adresse.setLongitude(adresseDetails.getLongitude());
         adresse.setLatitude(adresseDetails.getLatitude());
-        adresse.setIdVille(adresseDetails.getIdVille());
+
+        if (adresseDetails.getVille() != null && adresseDetails.getVille().getId() != null) {
+            Ville ville = villeRepository.findById(adresseDetails.getVille().getId())
+                    .orElseThrow(() -> new RuntimeException("Ville not found"));
+            adresse.setVille(ville);
+        } else {
+            throw new IllegalArgumentException("Ville ID cannot be null");
+        }
+
         return adresseRepository.save(adresse);
     }
+
 
     // Supprimer une adresse
     public void deleteAdresse(Integer id) {
@@ -65,8 +77,17 @@ public class AdresseService {
                 adresse.setLongitude((Double) value);
             } else if ("latitude".equals(key)) {
                 adresse.setLatitude((Double) value);
-            } else if ("idVille".equals(key)) {
-                adresse.setId((Integer) value);
+            } else if ("ville".equals(key)) {
+                if (value instanceof Map<?, ?> villeMap) {
+                    Object villeIdValue = villeMap.get("id");
+                    if (villeIdValue instanceof Integer villeId) {
+                        Ville ville = villeRepository.findById(villeId)
+                                .orElseThrow(() -> new RuntimeException("Ville not found"));
+                        adresse.setVille(ville);
+                    } else {
+                        throw new IllegalArgumentException("Invalid ville ID type");
+                    }
+                }
             }
         });
 

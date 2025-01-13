@@ -28,6 +28,7 @@ public class ApiController {
     private final VehiculeService vehiculeService;
     private final VehiculeTypeService vehiculeTypeService;
     private final LogService logService;
+    private final VilleService villeService;
     
 
     @GetMapping()
@@ -508,4 +509,29 @@ public class ApiController {
         return logService.patchLog(id, patch);
     }
 
+    // Ville
+
+    @GetMapping("villes")
+    public List<Ville> getVilles() { return villeService.getAllVilles(); }
+
+    @GetMapping("villes/{id}")
+    public Ville getVille(@PathVariable int id) { return villeService.getVilleById(id); }
+
+    @PostMapping("villes")
+    public Ville addVille (@RequestBody Ville ville) { return villeService.addVille(ville); }
+
+    @DeleteMapping("villes/{id}")
+    public String deleteVille(@PathVariable int id) { return villeService.deleteVilleById(id); }
+
+    @PutMapping("villes/{id}")
+    public ResponseEntity<Ville> updateVille(@PathVariable int id, @RequestBody Ville ville) {
+        Ville updatedVille = villeService.updateVille(id, ville);
+        return ResponseEntity.ok(updatedVille);
+    }
+
+    @PatchMapping("villes/{id}")
+    public ResponseEntity<Ville> patchVille(@PathVariable int id, @RequestBody Map<String, Object> patch) {
+        Ville patchedVille = villeService.patchVille(id, patch);
+        return ResponseEntity.ok(patchedVille);
+    }
 }
