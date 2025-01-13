@@ -3,23 +3,23 @@ package group.pant.api.service;
 import group.pant.api.model.Utilisateur;
 import group.pant.api.repository.UtilisateurRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jdk.jshell.execution.Util;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UtilisateurService {
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private final UtilisateurRepository utilisateurRepository;
 
     public List<Utilisateur> getAllUtilisateurs() {
         return utilisateurRepository.findAll();
     }
 
     public Utilisateur getUtilisateurById(int id) {
-        return utilisateurRepository.findById(id).get();
+        return utilisateurRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur with id " + id + " not found"));
     }
 
     public Utilisateur saveUtilisateur(Utilisateur utilisateur) {

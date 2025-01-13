@@ -13,7 +13,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "reserveration")
-public class Reserveration {
+public class Reservation {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;

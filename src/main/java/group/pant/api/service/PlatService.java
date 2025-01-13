@@ -5,18 +5,17 @@ import group.pant.api.model.Restaurant;
 import group.pant.api.repository.PlatRepository;
 import group.pant.api.repository.RestaurantRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class PlatService {
-    @Autowired
-    private PlatRepository platRepository;
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    private final PlatRepository platRepository;
+    private final RestaurantRepository restaurantRepository;
 
     public List<Plat> getAllPlats() {
         return platRepository.findAll();
@@ -42,7 +41,7 @@ public class PlatService {
         return platRepository.save(plat);
     }
 
-    public Plat patchUser(int id, Map<String, Object> patch) {
+    public Plat patchPlat(int id, Map<String, Object> patch) {
         Plat existingPlat = platRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Plat not found"));
 
