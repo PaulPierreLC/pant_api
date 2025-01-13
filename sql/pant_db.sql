@@ -390,11 +390,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `pant_db`.`reserveration`
+-- Table `pant_db`.`reservation`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `pant_db`.`reserveration` ;
+DROP TABLE IF EXISTS `pant_db`.`reservation` ;
 
-CREATE TABLE IF NOT EXISTS `pant_db`.`reserveration` (
+CREATE TABLE IF NOT EXISTS `pant_db`.`reservation` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `id_utilisateur` INT NOT NULL,
   `id_restaurant` INT NOT NULL,
