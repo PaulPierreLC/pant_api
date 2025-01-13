@@ -55,6 +55,8 @@ public class ApiController {
         return "Bienvenue dans l'API de PANToplate";
     }
 
+    // Utilisateur
+
     @GetMapping("utilisateurs")
     public List<Utilisateur> getUtilisateurs() {
         return utilisateurService.getAllUtilisateurs();
@@ -75,6 +77,8 @@ public class ApiController {
         utilisateurService.deleteUtilisateur(id);
         return "Utilisateur deleted";
     }
+
+    // Plat
 
     @GetMapping("plats")
     public List<Plat> getPlats() {
@@ -108,6 +112,8 @@ public class ApiController {
         return ResponseEntity.ok(patchedPlat);
     }
 
+    // Restaurant
+
     @GetMapping("restaurants")
     public List<Restaurant> getRestaurants() {
         return restaurantService.getAllRestaurants();
@@ -139,6 +145,8 @@ public class ApiController {
         Restaurant patchedRestaurant = restaurantService.patchRestaurant(id, patch);
         return ResponseEntity.ok(patchedRestaurant);
     }
+
+    // Cuisine
 
     @GetMapping("cuisines")
     public List<Cuisine> getCuisines() {
@@ -205,6 +213,7 @@ public class ApiController {
     public String deleteAction(@PathVariable int id) {
         return actionService.deleteAction(id); // Now it returns a String
     }
+
     // Adresse
 
     @GetMapping("adresses")
@@ -241,6 +250,8 @@ public class ApiController {
         return ResponseEntity.ok("Adresse deleted"); // You return a ResponseEntity with a String message
     }
 
+    // Avis
+
     @GetMapping("avis")
     public List<Avis> getAvis() {
     return avisService.getAllAvis();
@@ -273,7 +284,7 @@ public class ApiController {
         return avisService.patchAvis(id, updates);
     }
 
-// Reservation
+    // Reservation
 
     @GetMapping("reservations")
     public List<Reservation> getReservations() {
@@ -309,8 +320,8 @@ public class ApiController {
         return ResponseEntity.ok("Reservation deleted");
     }
 
-
     // Role
+
     @GetMapping("roles")
     public List<Role> getRoles() {
         return roleService.getAllRoles();
@@ -346,14 +357,13 @@ public class ApiController {
 
     @DeleteMapping("roles/{id}")
     public String deleteRole(@PathVariable int id) {
-        roleService.deleteRole(id);  // Perform the deletion
-        return "Role deleted";  // Return a success message
+        roleService.deleteRole(id);
+        return "Role deleted";
     }
-
 
     // Statut
 
-       @GetMapping("statuts")
+    @GetMapping("statuts")
     public List<Statut> getStatuts() {
         return statutService.getAllStatuts();
     }
@@ -387,15 +397,14 @@ public class ApiController {
 
     @DeleteMapping("statuts/{id}")
     public String deleteStatut(@PathVariable int id) {
-        statutService.deleteStatut(id);  // Calls the service method that doesn't return anything
-        return "Statut deleted";  // Return a success message
+        statutService.deleteStatut(id);
+        return "Statut deleted";
     }
-
 
     // Vehicule
 
     @GetMapping("vehicules")
-public List<Vehicule> getVehicules() {
+    public List<Vehicule> getVehicules() {
     return vehiculeService.getAllVehicules();
 }
 
@@ -422,20 +431,20 @@ public List<Vehicule> getVehicules() {
     }
 
     @PutMapping("vehicules/{id}")
-public ResponseEntity<Vehicule> updateVehicule(@PathVariable int id, @RequestBody Vehicule vehicule) {
-    Vehicule updatedVehicule = vehiculeService.updateVehicule(id, vehicule);
-    return ResponseEntity.ok(updatedVehicule);
-}
+    public ResponseEntity<Vehicule> updateVehicule(@PathVariable int id, @RequestBody Vehicule vehicule) {
+        Vehicule updatedVehicule = vehiculeService.updateVehicule(id, vehicule);
+        return ResponseEntity.ok(updatedVehicule);
+    }
 
-@DeleteMapping("vehicules/{id}")
-public String deleteVehicule(@PathVariable int id) {
-    return vehiculeService.deleteVehicule(id);
-}
+    @DeleteMapping("vehicules/{id}")
+    public String deleteVehicule(@PathVariable int id) {
+        return vehiculeService.deleteVehicule(id);
+    }
 
-// VehiculeType
+    // VehiculeType
 
-@GetMapping("vehiculetypes")
-public List<VehiculeType> getVehiculeTypes() {
+    @GetMapping("vehiculetypes")
+    public List<VehiculeType> getVehiculeTypes() {
     return vehiculeTypeService.getAllVehiculeTypes();
 }
 
@@ -445,8 +454,8 @@ public List<VehiculeType> getVehiculeTypes() {
                 .orElseThrow(() -> new RuntimeException("VehiculeType not found"));
     }
 
-@PostMapping("vehiculetypes")
-public VehiculeType addVehiculeType(@RequestBody VehiculeType vehiculeType) {
+    @PostMapping("vehiculetypes")
+    public VehiculeType addVehiculeType(@RequestBody VehiculeType vehiculeType) {
         return vehiculeTypeService.createVehiculeType(vehiculeType);
     }
 
@@ -455,11 +464,11 @@ public VehiculeType addVehiculeType(@RequestBody VehiculeType vehiculeType) {
         return vehiculeTypeService.patchVehiculeType(id, updates);
     }
 
-@PutMapping("vehiculetypes/{id}")
-public ResponseEntity<VehiculeType> updateVehiculeType(@PathVariable int id, @RequestBody VehiculeType vehiculeType) {
-    VehiculeType updatedVehiculeType = vehiculeTypeService.updateVehiculeType(id, vehiculeType);
-    return ResponseEntity.ok(updatedVehiculeType);
-}
+    @PutMapping("vehiculetypes/{id}")
+    public ResponseEntity<VehiculeType> updateVehiculeType(@PathVariable int id, @RequestBody VehiculeType vehiculeType) {
+        VehiculeType updatedVehiculeType = vehiculeTypeService.updateVehiculeType(id, vehiculeType);
+        return ResponseEntity.ok(updatedVehiculeType);
+    }
 
     @DeleteMapping("vehiculetypes/{id}")
     public ResponseEntity<String> deleteVehiculeType(@PathVariable int id) {
