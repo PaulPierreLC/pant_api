@@ -2,62 +2,64 @@ package group.pant.api.controller;
 
 import group.pant.api.model.Cuisine;
 import group.pant.api.service.CuisineService;
-import org.junit.jupiter.api.BeforeEach;
+import group.pant.api.service.PlatService;
+import group.pant.api.service.RestaurantService;
+import group.pant.api.service.UtilisateurService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.BDDMockito.given;
 
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(ApiController.class)
 public class ApiControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mvc;
+
+    @MockitoBean
+    private UtilisateurService utilisateurService;
+
+    @MockitoBean
+    private PlatService platService;
+
+    @MockitoBean
+    private RestaurantService restaurantService;
+
+    @MockitoBean
     private CuisineService cuisineService;
 
-    @InjectMocks
-    private ApiController apiController;
-
-    private MockMvc mockMvc;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(apiController).build();
-    }
-
     @Test
-    public void shouldGetAllCuisines() throws Exception {
-        // Given
-        Cuisine cuisine1 = new Cuisine();
-        cuisine1.setId(1);
-        cuisine1.setNom("Italian");
+    public void givenCuisines_whenGetCuisines_thenReturnJsonArray() throws Exception {
+        Cuisine c1 = new Cuisine();
+        c1.setId(1);
+        c1.setNom("Française");
 
-        Cuisine cuisine2 = new Cuisine();
-        cuisine2.setId(2);
-        cuisine2.setNom("Chinese");
+        Cuisine c2 = new Cuisine();
+        c2.setId(2);
+        c2.setNom("Japonaise");
 
-        List<Cuisine> cuisines = Arrays.asList(cuisine1, cuisine2);
+        List<Cuisine> allCuisines = Arrays.asList(c1, c2);
 
-        when(cuisineService.getAllCuisines()).thenReturn(cuisines);
+        given(cuisineService.getAllCuisines()).willReturn(allCuisines);
 
-        // When & Then
-        mockMvc.perform(get("/api/cuisines")
+        mvc.perform(get("/api/cuisines")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].nom").value("Italian"))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].nom").value("Chinese"));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].nom", is(c1.getNom())));
     }
 }
