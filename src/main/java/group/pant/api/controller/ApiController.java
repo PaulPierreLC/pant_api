@@ -35,6 +35,7 @@ public class ApiController {
     private final PlatCuisineService platCuisineService;
     private final PlatRegimeService platRegimeService;
     private final RegimeService regimeService;
+    private final VilleService villeService;
     
 
     @GetMapping()
@@ -766,6 +767,39 @@ public class ApiController {
     @PatchMapping("platRegimes/{id}")
     public PlatRegime patchPlatRegime(@PathVariable int id, @RequestBody Map<String, Object> patch) {
         return platRegimeService.patchPlatRegime(id, patch);
+    }
+
+    // Ville
+
+    @GetMapping("villes")
+    public List<Ville> getVilles() {
+        return villeService.getAllVilles();
+    }
+
+    @GetMapping("villes/{id}")
+    public Ville getVille(@PathVariable int id) {
+        return villeService.getVilleById(id);
+    }
+
+    @PostMapping("villes")
+    public Ville addVille(@RequestBody Ville ville) {
+        return villeService.addVille(ville);
+    }
+
+    @DeleteMapping("villes/{id}")
+    public ResponseEntity<String> deleteVille(@PathVariable int id) {
+        villeService.deleteVille(id);
+        return ResponseEntity.ok("Ville with id " + id + " deleted");
+    }
+
+    @PutMapping("villes/{id}")
+    public Ville updateVille(@PathVariable int id, @RequestBody Ville ville) {
+        return villeService.updateVille(id, ville);
+    }
+
+    @PatchMapping("villes/{id}")
+    public Ville patchVille(@PathVariable int id, @RequestBody Map<String, Object> patch) {
+        return villeService.patchVille(id, patch);
     }
 
 }

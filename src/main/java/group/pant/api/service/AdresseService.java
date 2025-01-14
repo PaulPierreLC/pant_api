@@ -44,12 +44,7 @@ public class AdresseService {
         existingAdresse.setComplement(adresse.getComplement());
         existingAdresse.setLongitude(adresse.getLongitude());
         existingAdresse.setLatitude(adresse.getLatitude());
-
-        if (adresse.getIdVille() != null && adresse.getIdVille().getId() != null) {
-            Ville ville = villeRepository.findById(adresse.getIdVille().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Adresse with id " + id + " not found"));
-            existingAdresse.setIdVille(ville);
-        }
+        existingAdresse.setIdVille(adresse.getIdVille());
 
         return adresseRepository.save(existingAdresse);
     }
