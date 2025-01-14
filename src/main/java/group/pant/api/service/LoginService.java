@@ -14,47 +14,54 @@ public class LoginService {
     @Autowired
     private LoginRepository loginRepository;
 
-    // Récupérer tous les logins
+    public Login saveLogin(Login login) {
+        return loginRepository.save(login);
+    }
+
+    public Login getLoginById(Integer id) {
+        Optional<Login> login = loginRepository.findById(id);
+        return login.orElse(null);
+    }
+
     public List<Login> getAllLogins() {
         return loginRepository.findAll();
     }
-
-    // Récupérer un login par ID
-    public Optional<Login> getLoginById(Integer id) {
-        return loginRepository.findById(id);
+    
+    public Login addLogin(Login login) {
+        loginRepository.save(login);
+        return login;
     }
 
-    // Créer un nouveau login
-    public Login createLogin(Login login) {
-        return loginRepository.save(login);
-    }
-
-    // Mettre à jour complètement un login
     public Login updateLogin(Integer id, Login loginDetails) {
-        Login login = loginRepository.findById(id).orElseThrow(() -> new RuntimeException("Login not found"));
-        login.setLogin(loginDetails.getLogin());
-        login.setMotDePasse(loginDetails.getMotDePasse());
-        login.setParametres(loginDetails.getParametres());
-        return loginRepository.save(login);
-    }
-
-    // Mettre à jour partiellement un login
-    public Login patchLogin(Integer id, Login loginDetails) {
-        Login login = loginRepository.findById(id).orElseThrow(() -> new RuntimeException("Login not found"));
-        if (loginDetails.getLogin() != null) {
+        Optional<Login> optionalLogin = loginRepository.findById(id);
+        if (optionalLogin.isPresent()) {
+            Login login = optionalLogin.get();
             login.setLogin(loginDetails.getLogin());
-        }
-        if (loginDetails.getMotDePasse() != null) {
             login.setMotDePasse(loginDetails.getMotDePasse());
+            return loginRepository.save(login);
+        } else {
+            return null;
         }
-        if (loginDetails.getParametres() != null) {
-            login.setParametres(loginDetails.getParametres());
-        }
-        return loginRepository.save(login);
     }
 
-    // Supprimer un login
-    public void deleteLogin(Integer id) {
+    public String deleteLogin(Integer id) {
         loginRepository.deleteById(id);
+        return "Deleted Login";
+    }
+
+    public Login patchLogin(Integer id, Login loginDetails) {
+        Optional<Login> optionalLogin = loginRepository.findById(id);
+        if (optionalLogin.isPresent()) {
+            Login login = optionalLogin.get();
+            if (loginDetails.getLogin() != null) {
+                login.setLogin(loginDetails.getLogin());
+            }
+            if (loginDetails.getMotDePasse() != null) {
+                login.setMotDePasse(loginDetails.getMotDePasse());
+            }
+            return loginRepository.save(login);
+        } else {
+            return null;
+        }
     }
 }
