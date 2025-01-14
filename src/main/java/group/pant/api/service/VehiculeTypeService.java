@@ -2,11 +2,12 @@ package group.pant.api.service;
 
 import group.pant.api.model.VehiculeType;
 import group.pant.api.repository.VehiculeTypeRepository;
-import org.springframework.stereotype.Service;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,47 +15,44 @@ public class VehiculeTypeService {
 
     private final VehiculeTypeRepository vehiculeTypeRepository;
 
-    // Récupérer tous les types de véhicules
     public List<VehiculeType> getAllVehiculeTypes() {
         return vehiculeTypeRepository.findAll();
     }
 
-    // Récupérer un type de véhicule par son id
-    public Optional<VehiculeType> getVehiculeTypeById(Integer id) {
-        return vehiculeTypeRepository.findById(id);
+    public VehiculeType getVehiculeTypeById(Integer id) {
+        return vehiculeTypeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("VehiculeType with id " + id + " not found"));
     }
 
-    // Créer un nouveau type de véhicule
-    public VehiculeType createVehiculeType(VehiculeType vehiculeType) {
+    public VehiculeType addVehiculeType(VehiculeType vehiculeType) {
         return vehiculeTypeRepository.save(vehiculeType);
     }
 
-    // Mettre à jour un type de véhicule existant
-    public VehiculeType updateVehiculeType(Integer id, VehiculeType vehiculeTypeDetails) {
-        VehiculeType vehiculeType = vehiculeTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("VehiculeType not found"));
-        vehiculeType.setNom(vehiculeTypeDetails.getNom());
-        return vehiculeTypeRepository.save(vehiculeType);
-    }
-
-    // Supprimer un type de véhicule
     public void deleteVehiculeType(Integer id) {
-        VehiculeType vehiculeType = vehiculeTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("VehiculeType not found"));
-        vehiculeTypeRepository.delete(vehiculeType);
+        vehiculeTypeRepository.deleteById(id);
     }
 
-    // Mettre à jour partiellement un type de véhicule
-    public VehiculeType patchVehiculeType(Integer id, Map<String, Object> updates) {
-        VehiculeType vehiculeType = vehiculeTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("VehiculeType not found"));
+    public VehiculeType updateVehiculeType(Integer id, VehiculeType vehiculeType) {
+        VehiculeType existingVehiculeType = vehiculeTypeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("VehiculeType with id " + id + " not found"));
+        existingVehiculeType.setNom(vehiculeType.getNom());
+        return vehiculeTypeRepository.save(existingVehiculeType);
+    }
 
-        updates.forEach((key, value) -> {
-            if ("nom".equals(key)) {
-                vehiculeType.setNom((String) value);
+    public VehiculeType patchVehiculeType(Integer id, Map<String, Object> patch) {
+        VehiculeType existingVehiculeType = vehiculeTypeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("VehiculeType with id " + id + " not found"));
+
+        patch.forEach((key, value) -> {
+            switch (key) {
+                case "nom":
+                    existingVehiculeType.setNom((String) value);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid field: " + key);
             }
         });
 
-        return vehiculeTypeRepository.save(vehiculeType);
+        return vehiculeTypeRepository.save(existingVehiculeType);
     }
 }

@@ -27,23 +27,31 @@ public class PlatService {
     }
 
     public Plat addPlat(Plat plat) {
-        platRepository.save(plat);
-        return plat;
+        return platRepository.save(plat);
     }
 
-    public String deletePlat(int id) {
+    public void deletePlat(int id) {
         platRepository.deleteById(id);
-        return "Deleted Plat";
     }
 
     public Plat updatePlat(int id, Plat plat) {
-        plat.setId(id);
-        return platRepository.save(plat);
+        Plat existingPlat = platRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Plat with id " + id + " not found"));
+
+        existingPlat.setNom(plat.getNom());
+        existingPlat.setDescription(plat.getDescription());
+        existingPlat.setPrix(plat.getPrix());
+        existingPlat.setPoids(plat.getPoids());
+        existingPlat.setStock(plat.getStock());
+        existingPlat.setPhoto(plat.getPhoto());
+        existingPlat.setIdRestaurant(plat.getIdRestaurant());
+
+        return platRepository.save(existingPlat);
     }
 
     public Plat patchPlat(int id, Map<String, Object> patch) {
         Plat existingPlat = platRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Plat not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Plat with id " + id + " not found"));
 
         patch.forEach((key, value) -> {
             switch (key) {
@@ -67,16 +75,14 @@ public class PlatService {
                     break;
                 case "idRestaurant":
                     if (value instanceof Map<?, ?> restaurantMap) {
-                        Object restaurantIdValue = restaurantMap.get("id");
-                        if (restaurantIdValue instanceof Integer restaurantId) { // Check if it is an Integer
-                            Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                                    .orElseThrow(() -> new RuntimeException("Restaurant not found"));
-                            existingPlat.setIdRestaurant(restaurant);
-                        } else {
-                            throw new IllegalArgumentException("Invalid restaurant ID type");
-                        }
+                        Integer restaurantId = (Integer) restaurantMap.get("id");
+                        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                                .orElseThrow(() -> new EntityNotFoundException("Restaurant with id " + restaurantId + " not found"));
+                        existingPlat.setIdRestaurant(restaurant);
                     }
                     break;
+                default:
+                    throw new IllegalArgumentException("Invalid field: " + key);
             }
         });
 

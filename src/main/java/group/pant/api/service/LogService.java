@@ -1,9 +1,9 @@
 package group.pant.api.service;
 
-import group.pant.api.model.Log;
-import group.pant.api.repository.LogRepository;
 import group.pant.api.model.Action;
+import group.pant.api.model.Log;
 import group.pant.api.model.Utilisateur;
+import group.pant.api.repository.LogRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,58 +17,51 @@ public class LogService {
 
     private final LogRepository logRepository;
 
-    // Méthode pour récupérer tous les logs
     public List<Log> getAllLogs() {
         return logRepository.findAll();
     }
 
     public Log getLogById(int id) {
-        return logRepository.findById(id).orElse(null); // Ou gérer l'absence de log différemment.
+        return logRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Log with id " + id + " not found"));
     }
 
-    // Méthode pour enregistrer un nouveau log
-    public Log addLog(Action action, Utilisateur utilisateur, String parametre) {
-        Log log = new Log();
-        log.setIdAction(action);
-        log.setIdUtilisateur(utilisateur);
-        log.setParametre(parametre);
-        log.setDateCreation(java.time.Instant.now()); // ou tu peux utiliser le @ColumnDefault (current_timestamp) dans ta base de données
-
+    public Log addLog(Log log) {
         return logRepository.save(log);
     }
 
-    // Méthode pour supprimer un log par son ID
-    public String deleteLog(int id) {
+    public void deleteLog(int id) {
         logRepository.deleteById(id);
-        return "Deleted Log with id " + id;
     }
 
-    // Méthode pour mettre à jour un log existant
-    public Log updateLog(int id, Log logDetails) {
+    public Log updateLog(int id, Log log) {
         Log existingLog = logRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Log not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Log with id " + id + " not found"));
 
-        // Mettre à jour les propriétés du log
-        existingLog.setIdAction(logDetails.getIdAction());
-        existingLog.setIdUtilisateur(logDetails.getIdUtilisateur());
-        existingLog.setParametre(logDetails.getParametre());
-        existingLog.setDateCreation(logDetails.getDateCreation());
+        existingLog.setIdAction(log.getIdAction());
+        existingLog.setIdUtilisateur(log.getIdUtilisateur());
+        existingLog.setParametre(log.getParametre());
 
         return logRepository.save(existingLog);
     }
 
-    // Méthode pour appliquer un patch à un log (mettre à jour certains champs)
     public Log patchLog(int id, Map<String, Object> patch) {
         Log existingLog = logRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Log not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Log with id " + id + " not found"));
 
         patch.forEach((key, value) -> {
-            if (key.equals("parametre")) {
-                existingLog.setParametre((String) value);
-            } else if (key.equals("date_creation")) {
-                existingLog.setDateCreation((java.time.Instant) value);
-            } else {
-                throw new IllegalArgumentException("Invalid field: " + key);
+            switch (key) {
+                case "parametre":
+                    existingLog.setParametre((String) value);
+                    break;
+                case "idAction":
+                    existingLog.setIdAction((Action) value);
+                    break;
+                case "idUtilisateur":
+                    existingLog.setIdUtilisateur((Utilisateur) value);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid field: " + key);
             }
         });
 
