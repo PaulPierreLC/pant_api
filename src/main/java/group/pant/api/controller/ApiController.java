@@ -36,6 +36,7 @@ public class ApiController {
     private final PlatRegimeService platRegimeService;
     private final RegimeService regimeService;
     private final VilleService villeService;
+    private final LoginService loginService;
     
 
     @GetMapping()
@@ -802,4 +803,37 @@ public class ApiController {
         return villeService.patchVille(id, patch);
     }
 
+    // Login
+
+    @GetMapping("logins")
+    public List<Login> getLogins() {
+        return loginService.getAllLogins();
+    }
+
+    @GetMapping("logins/{id}")
+    public Login getLogin(@PathVariable int id) {
+        return loginService.getLoginById(id);
+    }
+
+    @PostMapping("logins")
+    public Login addLogin(@RequestBody Login login) {
+        return loginService.addLogin(login);
+    }
+
+    @DeleteMapping("logins/{id}")
+    public String deleteLogin(@PathVariable int id) {
+        return loginService.deleteLogin(id);
+    }
+
+    @PutMapping("logins/{id}")
+    public ResponseEntity<Login> updateLogin(@PathVariable int id, @RequestBody Login login) {
+        Login updatedLogin = loginService.updateLogin(id, login);
+        return ResponseEntity.ok(updatedLogin);
+    }
+
+    @PatchMapping("logins/{id}")
+    public ResponseEntity<Login> patchLogin(@PathVariable int id, @RequestBody Map<String, Object> patch) {
+        Login patchedLogin = loginService.patchLogin(id, patch);
+        return ResponseEntity.ok(patchedLogin);
+    }
 }
