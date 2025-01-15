@@ -15,8 +15,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "regime")
-public class Regime {
+@Table(name = "paiement_etat")
+public class PaiementEtat {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;

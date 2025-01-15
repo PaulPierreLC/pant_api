@@ -1,7 +1,7 @@
 package group.pant.api.service;
 
-import group.pant.api.model.Restaurant;
 import group.pant.api.model.Adresse;
+import group.pant.api.model.Restaurant;
 import group.pant.api.model.Utilisateur;
 import group.pant.api.repository.AdresseRepository;
 import group.pant.api.repository.RestaurantRepository;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -31,23 +30,30 @@ public class RestaurantService {
     }
 
     public Restaurant addRestaurant(Restaurant restaurant) {
-        restaurantRepository.save(restaurant);
-        return restaurant;
+        return restaurantRepository.save(restaurant);
     }
 
-    public String deleteRestaurant(int id) {
+    public void deleteRestaurant(int id) {
         restaurantRepository.deleteById(id);
-        return "Deleted Restaurant";
     }
 
     public Restaurant updateRestaurant(int id, Restaurant restaurant) {
-        restaurant.setId(id);
-        return restaurantRepository.save(restaurant);
+        Restaurant existingRestaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Restaurant with id " + id + " not found"));
+
+        existingRestaurant.setNom(restaurant.getNom());
+        existingRestaurant.setTelephone(restaurant.getTelephone());
+        existingRestaurant.setCapacite(restaurant.getCapacite());
+        existingRestaurant.setPhoto(restaurant.getPhoto());
+        existingRestaurant.setIdAdresse(restaurant.getIdAdresse());
+        existingRestaurant.setIdRestaurateur(restaurant.getIdRestaurateur());
+
+        return restaurantRepository.save(existingRestaurant);
     }
 
     public Restaurant patchRestaurant(int id, Map<String, Object> patch) {
         Restaurant existingRestaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Restaurant with id " + id + " not found"));
 
         patch.forEach((key, value) -> {
             switch (key) {
@@ -63,39 +69,27 @@ public class RestaurantService {
                 case "photo":
                     existingRestaurant.setPhoto((String) value);
                     break;
-                case "dateCreation":
-                    existingRestaurant.setDateCreation(Instant.parse((String) value));
-                    break;
                 case "idAdresse":
-                    if (value instanceof Map<?, ?> addressMap) {
-                        Object addressIdValue = addressMap.get("id");
-                        if (addressIdValue instanceof Integer addressId) { // Check if it is an Integer
-                            Adresse adresse = adresseRepository.findById(addressId)
-                                    .orElseThrow(() -> new RuntimeException("Adresse not found"));
-                            existingRestaurant.setIdAdresse(adresse);
-                        } else {
-                            throw new IllegalArgumentException("Invalid address ID type");
-                        }
+                    if (value instanceof Map<?, ?> adresseMap) {
+                        Integer adresseId = (Integer) adresseMap.get("id");
+                        Adresse adresse = adresseRepository.findById(adresseId)
+                                .orElseThrow(() -> new EntityNotFoundException("Adresse with id " + adresseId + " not found"));
+                        existingRestaurant.setIdAdresse(adresse);
                     }
                     break;
                 case "idRestaurateur":
-                    if (value instanceof Map<?, ?> userMap) {
-                        Object userIdValue = userMap.get("id");
-                        if (userIdValue instanceof Integer userId) { // Check if it is an Integer
-                            Utilisateur restaurateur = utilisateurRepository.findById(userId)
-                                    .orElseThrow(() -> new RuntimeException("Utilisateur not found"));
-                            existingRestaurant.setIdRestaurateur(restaurateur);
-                        } else {
-                            throw new IllegalArgumentException("Invalid restaurateur ID type");
-                        }
+                    if (value instanceof Map<?, ?> utilisateurMap) {
+                        Integer utilisateurId = (Integer) utilisateurMap.get("id");
+                        Utilisateur utilisateur = utilisateurRepository.findById(utilisateurId)
+                                .orElseThrow(() -> new EntityNotFoundException("Utilisateur with id " + utilisateurId + " not found"));
+                        existingRestaurant.setIdRestaurateur(utilisateur);
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown attribute: " + key);
+                    throw new IllegalArgumentException("Invalid field: " + key);
             }
         });
 
         return restaurantRepository.save(existingRestaurant);
     }
-
 }

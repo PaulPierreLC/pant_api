@@ -31,19 +31,23 @@ public class VilleService {
         return ville;
     }
 
-    public String deleteVilleById(int id) {
+    public void deleteVille(int id) {
         villeRepository.deleteById(id);
-        return "Delete Ville";
     }
 
-    public Ville updateVille(int id, Ville ville) {
-        ville.setId(id);
-        return villeRepository.save(ville);
+    public Ville updateVille(Integer id, Ville ville) {
+        Ville existingVille = villeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Ville with id " + id + " not found"));
+
+        existingVille.setNom(ville.getNom());
+        existingVille.setCodePostal(ville.getCodePostal());
+
+        return villeRepository.save(existingVille);
     }
 
     public Ville patchVille(int id, Map<String, Object> patch) {
         Ville existingVille = villeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ville not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Ville with id " + id + " not found"));
 
         patch.forEach((String key, Object value) -> {
             switch (key) {

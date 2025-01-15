@@ -24,33 +24,36 @@ public class CuisineService {
     }
 
     public Cuisine addCuisine(Cuisine cuisine) {
-        cuisineRepository.save(cuisine);
-        return cuisine;
+        return cuisineRepository.save(cuisine);
     }
 
-    public String deleteCuisine(int id) {
+    public void deleteCuisine(int id) {
         cuisineRepository.deleteById(id);
-        return "Deleted Cuisine";
     }
 
     public Cuisine updateCuisine(int id, Cuisine cuisine) {
-        cuisine.setId(id);
-        return cuisineRepository.save(cuisine);
+        Cuisine existingCuisine = cuisineRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Cuisine with id " + id + " not found"));
+
+        existingCuisine.setNom(cuisine.getNom());
+
+        return cuisineRepository.save(existingCuisine);
     }
 
     public Cuisine patchCuisine(int id, Map<String, Object> patch) {
         Cuisine existingCuisine = cuisineRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cuisine not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Cuisine with id " + id + " not found"));
 
         patch.forEach((key, value) -> {
-            if (key.equals("nom")) {
-                existingCuisine.setNom((String) value);
-            } else {
-                throw new IllegalArgumentException("Invalid field: " + key);
+            switch (key) {
+                case "nom":
+                    existingCuisine.setNom((String) value);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid field: " + key);
             }
         });
 
         return cuisineRepository.save(existingCuisine);
     }
-
 }
