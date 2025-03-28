@@ -18,6 +18,7 @@ import java.time.Instant;
 public class Utilisateur {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "prenom", length = 45)

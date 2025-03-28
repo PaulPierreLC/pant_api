@@ -32,14 +32,10 @@ public class Login {
     @Column(name = "mot_de_passe", nullable = false, length = 45)
     private String motDePasse;
 
-    @ColumnDefault("current_timestamp()")
-    @CreationTimestamp
-    @Column(name = "date_creer", updatable = false)
-
-    private Instant dateCreer;
-
-    @UpdateTimestamp
-    @Column(name = "date_maj")
-    private Instant dateMaj;
-
+    @PrePersist
+    public void ensureId() {
+        if (utilisateur != null && id == null) {
+            id = utilisateur.getId();
+        }
+    }
 }

@@ -18,6 +18,7 @@ import java.time.Instant;
 public class Vehicule {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "nom", nullable = false, length = 45)

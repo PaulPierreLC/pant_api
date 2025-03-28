@@ -18,6 +18,7 @@ import java.time.Instant;
 public class Offre {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "utilisations_restante")
