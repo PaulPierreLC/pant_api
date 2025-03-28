@@ -46,7 +46,6 @@ public class Restaurant {
     @ColumnDefault("current_timestamp()")
     @CreationTimestamp
     @Column(name = "date_creer", updatable = false)
-
     private Instant dateCreer;
 
     @UpdateTimestamp
