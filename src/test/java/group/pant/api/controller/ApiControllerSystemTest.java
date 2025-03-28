@@ -1,6 +1,6 @@
 package group.pant.api.controller;
 
-import group.pant.api.model.Cuisine;
+import group.pant.api.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,10 +39,6 @@ public class ApiControllerSystemTest {
 
         @BeforeEach
         void setupCuisines() {
-            // Clear existing cuisines if needed
-            entityManager.createQuery("DELETE FROM Cuisine").executeUpdate();
-
-            // Create and persist cuisine data directly using EntityManager
             String[] cuisineNames = {
                     "Française", "Italienne", "Japonaise",
                     "Mexicaine", "Américaine", "Chinoise",
@@ -126,6 +122,145 @@ public class ApiControllerSystemTest {
                             .content(patchData))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.nom").value("Patched Cuisine"));
+        }
+    }
+    @Nested
+    @Transactional
+    class RestaurantTests {
+        private static final String RESTAURANTS_ENDPOINT = API_BASE + "/restaurants";
+
+        private Integer firstRestaurantId;
+        private String restaurantsEndpointId;
+
+        @BeforeEach
+        void setupRestaurants() {
+            Role role = new Role();
+            role.setNom("ROLE_USER");
+            entityManager.persist(role);
+
+            Ville ville = new Ville();
+            ville.setNom("Springfield");
+            ville.setCodePostal("12345");
+            entityManager.persist(ville);
+
+            Utilisateur utilisateur = new Utilisateur();
+            utilisateur.setPrenom("John");
+            utilisateur.setNom("Doe");
+            utilisateur.setTelMobile("0123456789");
+            utilisateur.setTelFix("0987654321");
+            utilisateur.setMail("john.doe@example.com");
+            utilisateur.setParametre("{}");
+            utilisateur.setPointsFidelite(0);
+            utilisateur.setIdRole(role);
+            entityManager.persist(utilisateur);
+
+            Adresse adresse = new Adresse();
+            adresse.setNumero("123");
+            adresse.setRue("Main St");
+            adresse.setComplement("Apt 4B");
+            adresse.setLongitude(1.2345);
+            adresse.setLatitude(5.6789);
+            adresse.setIdVille(ville);
+            entityManager.persist(adresse);
+
+            String[] restaurantNames = {
+                    "Le Gourmet", "Pizzeria Bella", "Sushi House",
+                    "Taco Fiesta", "American Diner", "Chinois Express",
+                    "Curry Palace", "Spanish Tapas Bar"
+            };
+
+            for (String name : restaurantNames) {
+                Restaurant restaurant = new Restaurant();
+                restaurant.setNom(name);
+                restaurant.setTelephone("123456789");
+                restaurant.setCapacite(50);
+                restaurant.setPhoto("default_photo.jpg");
+
+                restaurant.setIdAdresse(adresse);
+                restaurant.setIdRestaurateur(utilisateur);
+
+                entityManager.persist(restaurant);
+
+                if (firstRestaurantId == null) {
+                    firstRestaurantId = restaurant.getId();
+                    restaurantsEndpointId = RESTAURANTS_ENDPOINT + "/" + firstRestaurantId;
+                }
+            }
+            entityManager.flush();
+        }
+
+        @Test
+        void testGetAllRestaurants() throws Exception {
+            mockMvc.perform(get(RESTAURANTS_ENDPOINT).contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$").isArray())
+                    .andExpect(jsonPath("$.length()").value(8))
+                    .andExpect(jsonPath("$[0].nom").value("Le Gourmet"))
+                    .andExpect(jsonPath("$[1].nom").value("Pizzeria Bella"))
+                    .andExpect(jsonPath("$[2].nom").value("Sushi House"))
+                    .andExpect(jsonPath("$[3].nom").value("Taco Fiesta"))
+                    .andExpect(jsonPath("$[4].nom").value("American Diner"))
+                    .andExpect(jsonPath("$[5].nom").value("Chinois Express"))
+                    .andExpect(jsonPath("$[6].nom").value("Curry Palace"))
+                    .andExpect(jsonPath("$[7].nom").value("Spanish Tapas Bar"));
+        }
+
+        @Test
+        void testGetRestaurantById() throws Exception {
+            mockMvc.perform(get(restaurantsEndpointId)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(firstRestaurantId))
+                    .andExpect(jsonPath("$.nom").value("Le Gourmet"));
+        }
+
+        @Test
+        void testAddRestaurant() throws Exception {
+            Integer adresseId = entityManager.createQuery("SELECT a.id FROM Adresse a", Integer.class)
+                    .setMaxResults(1)
+                    .getSingleResult();
+
+            Integer utilisateurId = entityManager.createQuery("SELECT u.id FROM Utilisateur u", Integer.class)
+                    .setMaxResults(1)
+                    .getSingleResult();
+
+            String newRestaurant = "{\"nom\": \"New Restaurant\", \"telephone\": \"987654321\", \"capacite\": 60, \"photo\": \"new_photo.jpg\", \"idAdresse\": {\"id\": " + adresseId + "}, \"idRestaurateur\": {\"id\": " + utilisateurId + "}}";
+
+            mockMvc.perform(post(RESTAURANTS_ENDPOINT)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(newRestaurant))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.nom").value("New Restaurant"));
+        }
+
+        @Test
+        void testDeleteRestaurant() throws Exception {
+            mockMvc.perform(delete(restaurantsEndpointId))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("Restaurant with id " + firstRestaurantId + " deleted"));
+        }
+
+        @Test
+        void testUpdateRestaurant() throws Exception {
+            String updatedRestaurant = "{\"nom\": \"Updated Restaurant\", \"telephone\": \"111111111\", \"capacite\": 70, \"photo\": \"updated_photo.jpg\", \"idAdresse\": {\"id\": 1}, \"idRestaurateur\": {\"id\": 1}}";
+
+            mockMvc.perform(put(restaurantsEndpointId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(updatedRestaurant))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.nom").value("Updated Restaurant"));
+        }
+
+        @Test
+        void testPatchRestaurant() throws Exception {
+            String patchData = "{\"nom\": \"Patched Restaurant\"}";
+
+            mockMvc.perform(patch(restaurantsEndpointId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(patchData))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.nom").value("Patched Restaurant"));
         }
     }
 }
