@@ -678,6 +678,12 @@ public class ApiController {
         return platCuisineService.getAllPlatCuisines();
     }
 
+    @GetMapping("plats/restaurant/{restaurantId}")
+    public List<Plat> getPlatsByRestaurantId(@PathVariable int restaurantId) {
+
+        return platService.getPlatsByRestaurantId(restaurantId);
+    }
+
     @GetMapping("platCuisines/{id}")
     public PlatCuisine getPlatCuisine(@PathVariable int id) {
         return platCuisineService.getPlatCuisineById(id);

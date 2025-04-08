@@ -21,6 +21,13 @@ public class PlatService {
         return platRepository.findAll();
     }
 
+    public List<Plat> getPlatsByRestaurantId(Integer restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new EntityNotFoundException("Restaurant with id " + restaurantId + " not found"));
+
+        return platRepository.findByIdRestaurant(restaurant);
+    }
+
     public Plat getPlatById(int id) {
         return platRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Plat with id " + id + " not found"));
