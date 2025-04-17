@@ -15,7 +15,9 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class LoginService {
+
     private final LoginRepository loginRepository;;
+
     private final UtilisateurRepository utilisateurRepository;
 
     public List<Login> getAllLogins() {
@@ -66,6 +68,7 @@ public class LoginService {
             }
         });
         return loginRepository.save(existingLogin);
+
     }
 
     public Login getLoginByUsername(String username) {
@@ -82,6 +85,7 @@ public class LoginService {
         } catch (Exception e) {
             throw new RuntimeException("Erreur lors de la sauvegarde du login : " + e.getMessage(), e);
         }
+
     }
 
     public Login authenticate(String login, String motDePasse) {
@@ -94,5 +98,4 @@ public class LoginService {
     
         return existingLogin;
     }
-
 }
