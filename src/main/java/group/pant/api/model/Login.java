@@ -9,9 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-
 import java.time.Instant;
-
 
 @Getter
 @Setter

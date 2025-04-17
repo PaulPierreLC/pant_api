@@ -16,7 +16,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final LoginRepository loginRepository;;
+    private final LoginRepository loginRepository;
+    private final UtilisateurRepository utilisateurRepository;
+
 
     private final UtilisateurRepository utilisateurRepository;
 
