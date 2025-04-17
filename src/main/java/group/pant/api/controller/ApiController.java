@@ -1,5 +1,6 @@
 package group.pant.api.controller;
 
+import group.pant.api.dto.CommandeDetailDto;
 import group.pant.api.model.*;
 import group.pant.api.service.*;
 import lombok.RequiredArgsConstructor;
@@ -486,8 +487,8 @@ public class ApiController {
     }
 
     @PostMapping("commandeDetails")
-    public CommandeDetail addCommandeDetail(@RequestBody CommandeDetail commandeDetail) {
-        return commandeDetailService.addCommandeDetail(commandeDetail);
+    public CommandeDetail addCommandeDetail(@RequestBody CommandeDetailDto commandeDetailDto) {
+        return commandeDetailService.addCommandeDetail(commandeDetailDto);
     }
 
     @DeleteMapping("commandeDetails/{id}")
