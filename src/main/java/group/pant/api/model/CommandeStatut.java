@@ -1,11 +1,10 @@
 package group.pant.api.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import java.time.Instant;
 
@@ -15,6 +14,7 @@ import java.time.Instant;
 @Table(name = "commande_statuts")
 public class CommandeStatut {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -28,10 +28,6 @@ public class CommandeStatut {
     @JoinColumn(name = "id_statut", nullable = false)
     private Statut idStatut;
 
-    @ColumnDefault("current_timestamp()")
-    @Column(name = "date_creation", nullable = false)
-    private Instant dateCreation;
-
     @Lob
     @Column(name = "commentaire")
     private String commentaire;
@@ -41,5 +37,15 @@ public class CommandeStatut {
 
     @Column(name = "lattitude")
     private Double lattitude;
+
+    @ColumnDefault("current_timestamp()")
+    @CreationTimestamp
+    @Column(name = "date_creer", updatable = false)
+
+    private Instant dateCreer;
+
+    @UpdateTimestamp
+    @Column(name = "date_maj")
+    private Instant dateMaj;
 
 }

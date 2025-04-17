@@ -1,17 +1,15 @@
 package group.pant.api.service;
 
-import group.pant.api.model.Reservation;
-import group.pant.api.model.Restaurant;
-import group.pant.api.model.Utilisateur;
+import group.pant.api.model.*;
 import group.pant.api.repository.RestaurantRepository;
 import group.pant.api.repository.UtilisateurRepository;
 import group.pant.api.repository.ReservationRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 import java.time.Instant;
-
 
 @Service
 @RequiredArgsConstructor
@@ -21,67 +19,70 @@ public class ReservationService {
     private final UtilisateurRepository utilisateurRepository;
     private final RestaurantRepository restaurantRepository;
 
-    // Récupérer toutes les réservations
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
 
-    // Récupérer une réservation par son ID
     public Reservation getReservationById(Integer id) {
         return reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Reservation with id " + id + " not found"));
     }
 
-    // Créer une nouvelle réservation
-    public Reservation createReservation(Reservation reservation) {
+    public Reservation addReservation(Reservation reservation) {
         return reservationRepository.save(reservation);
     }
 
-    // Mettre à jour une réservation
-    public Reservation updateReservation(Integer id, Reservation reservationDetails) {
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
-        reservation.setIdUtilisateur(reservationDetails.getIdUtilisateur());
-        reservation.setIdRestaurant(reservationDetails.getIdRestaurant());
-        reservation.setHeure(reservationDetails.getHeure());
-        reservation.setCouverts(reservationDetails.getCouverts());
-        return reservationRepository.save(reservation);
+    public Reservation updateReservation(Integer id, Reservation reservation) {
+        Reservation existingReservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation with id " + id + " not found"));
+
+        existingReservation.setIdUtilisateur(reservation.getIdUtilisateur());
+        existingReservation.setIdRestaurant(reservation.getIdRestaurant());
+        existingReservation.setHeure(reservation.getHeure());
+        existingReservation.setCouverts(reservation.getCouverts());
+
+        return reservationRepository.save(existingReservation);
     }
 
-    // Supprimer une réservation
     public void deleteReservation(Integer id) {
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
-        reservationRepository.delete(reservation);
+        reservationRepository.deleteById(id);
     }
 
-    // Mettre à jour partiellement une réservation
-    public Reservation patchReservation(Integer id, Map<String, Object> updates) {
-        // Find the reservation by its ID
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+    public Reservation patchReservation(Integer id, Map<String, Object> patch) {
+        Reservation existinReservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation with id " + id + " not found"));
 
-        updates.forEach((key, value) -> {
-            if ("id_utilisateur".equals(key)) {
-                // Find the Utilisateur by ID and set it on the reservation
-                Utilisateur utilisateur = utilisateurRepository.findById((Integer) value)
-                        .orElseThrow(() -> new RuntimeException("Utilisateur not found"));
-                reservation.setIdUtilisateur(utilisateur);
-            } else if ("id_restaurant".equals(key)) {
-                // Find the Restaurant by ID and set it on the reservation
-                Restaurant restaurant = restaurantRepository.findById((Integer) value)
-                        .orElseThrow(() -> new RuntimeException("Restaurant not found"));
-                reservation.setIdRestaurant(restaurant);
-            } else if ("heure".equals(key)) {
-                // Convert String to Instant (ISO 8601 format, e.g., "2025-01-07T12:34:56Z")
-                String heureString = (String) value;
-                Instant heureInstant = Instant.parse(heureString);  // Converts String to Instant
-                reservation.setHeure(heureInstant);
-            } else if ("couverts".equals(key)) {
-                reservation.setCouverts((Integer) value);
+        patch.forEach((key, value) -> {
+            switch (key) {
+                case "idUtilisateur":
+                    if (value instanceof Map<?, ?> utilisateurMap) {
+                        Integer utilisateurId = (Integer) utilisateurMap.get("id");
+                        Utilisateur utilisateur = utilisateurRepository.findById(utilisateurId)
+                                .orElseThrow(() -> new EntityNotFoundException("Utilisateur with id " + utilisateurId + " not found"));
+                        existinReservation.setIdUtilisateur(utilisateur);
+                    }
+                    break;
+                case "idRestaurant":
+                    if (value instanceof Map<?, ?> restaurantMap) {
+                        Integer restaurantId = (Integer) restaurantMap.get("id");
+                        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                                .orElseThrow(() -> new EntityNotFoundException("Restaurant with id " + restaurantId + " not found"));
+                        existinReservation.setIdRestaurant(restaurant);
+                    }
+                    break;
+                case "heure":
+                    String heureString = (String) value;
+                    Instant heureInstant = Instant.parse(heureString);
+                    existinReservation.setHeure(heureInstant);
+                    break;
+                case "couverts":
+                    existinReservation.setCouverts((Integer) value);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid field: " + key);
             }
         });
 
-        return reservationRepository.save(reservation);
+        return reservationRepository.save(existinReservation);
     }
 }
