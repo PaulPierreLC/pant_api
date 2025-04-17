@@ -7,22 +7,19 @@ import group.pant.api.repository.RoleRepository;
 import group.pant.api.repository.UtilisateurRepository;
 import group.pant.api.repository.VehiculeRepository;
 import jakarta.persistence.EntityNotFoundException;
-// import lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
     private final RoleRepository roleRepository;
     private final VehiculeRepository vehiculeRepository;
-
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, RoleService roleService) {
-        this.utilisateurRepository = utilisateurRepository;
-    }
 
     public List<Utilisateur> getAllUtilisateurs() {
         return utilisateurRepository.findAll();

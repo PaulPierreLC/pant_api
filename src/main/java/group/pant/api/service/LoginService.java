@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Service
 @RequiredArgsConstructor
 public class LoginService {
     private final LoginRepository loginRepository;;
+    private final UtilisateurRepository utilisateurRepository;
 
     public List<Login> getAllLogins() {
         return loginRepository.findAll();
