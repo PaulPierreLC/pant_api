@@ -2,7 +2,9 @@ package group.pant.api.controller;
 
 import group.pant.api.model.*;
 import group.pant.api.service.*;
+// import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,6 @@ public class ApiController {
     private final LogService logService;
     private final VilleService villeService;
     private final LoginService loginService;
-    
 
     @GetMapping()
     public String accueil() {
@@ -550,6 +551,8 @@ public class ApiController {
 
     @PostMapping("logins")
     public Login addLogin(@RequestBody Login login) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurById(login.getUtilisateur().getId());
+        login.setUtilisateur(utilisateur);
         return loginService.addLogin(login);
     }
 
