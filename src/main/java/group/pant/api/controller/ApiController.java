@@ -2,13 +2,13 @@ package group.pant.api.controller;
 
 import group.pant.api.model.*;
 import group.pant.api.service.*;
-// import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 import java.util.Map;
@@ -551,8 +551,8 @@ public class ApiController {
 
     @PostMapping("logins")
     public Login addLogin(@RequestBody Login login) {
-        Utilisateur utilisateur = utilisateurService.getUtilisateurById(login.getUtilisateur().getId());
-        login.setUtilisateur(utilisateur);
+            Utilisateur utilisateur = utilisateurService.getUtilisateurById(login.getUtilisateur().getId());
+    login.setUtilisateur(utilisateur);
         return loginService.addLogin(login);
     }
 
@@ -571,5 +571,29 @@ public class ApiController {
     public ResponseEntity<Login> patchLogin(@PathVariable int id, @RequestBody Map<String, Object> patch) {
         Login patchedLogin = loginService.patchLogin(id, patch);
         return ResponseEntity.ok(patchedLogin);
+    }
+
+    @PostMapping("connexion")
+    public ResponseEntity<String> login(@RequestBody Map<String, String> payload, HttpServletResponse response) {
+        try {
+            String login = payload.get("login");
+            String motDePasse = payload.get("motDePasse");
+
+            Login authenticatedLogin = loginService.authenticate(login, motDePasse);
+
+            Utilisateur utilisateur = authenticatedLogin.getUtilisateur();
+
+            Cookie userCookie = new Cookie("userId", utilisateur.getId().toString());
+            userCookie.setHttpOnly(true); 
+            userCookie.setPath("/"); 
+            userCookie.setMaxAge(60 * 60 * 24); 
+            response.addCookie(userCookie);
+
+            return ResponseEntity.ok("Connexion réussie !");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou mot de passe incorrect");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
