@@ -33,8 +33,7 @@ public class CommandeService {
     }
 
     public Commande addCommande(Commande commande) {
-        commandeRepository.save(commande);
-        return commande;
+        return commandeRepository.save(commande);
     }
 
     public void deleteCommande(int id) {
