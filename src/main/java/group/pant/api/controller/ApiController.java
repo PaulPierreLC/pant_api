@@ -820,11 +820,16 @@ public class ApiController {
         return loginService.getLoginById(id);
     }
 
+    // @PostMapping("logins")
+    // public Login addLogin(@RequestBody Login login) {
+    //         Utilisateur utilisateur = utilisateurService.getUtilisateurById(login.getUtilisateur().getId());
+    // login.setUtilisateur(utilisateur);
+    //     return loginService.addLogin(login);
+    // }
+
     @PostMapping("logins")
     public Login addLogin(@RequestBody Login login) {
-            Utilisateur utilisateur = utilisateurService.getUtilisateurById(login.getUtilisateur().getId());
-    login.setUtilisateur(utilisateur);
-        return loginService.addLogin(login);
+        return loginService.createLogin(login);
     }
 
     @DeleteMapping("logins/{id}")
@@ -844,27 +849,44 @@ public class ApiController {
         return ResponseEntity.ok(patchedLogin);
     }
 
+    // @PostMapping("connexion")
+    // public ResponseEntity<String> login(@RequestBody Map<String, String> payload, HttpServletResponse response) {
+    //     try {
+    //         String login = payload.get("login");
+    //         String motDePasse = payload.get("motDePasse");
+
+    //         Login authenticatedLogin = loginService.authenticate(login, motDePasse);
+
+    //         Utilisateur utilisateur = authenticatedLogin.getUtilisateur();
+
+    //         Cookie userCookie = new Cookie("userId", utilisateur.getId().toString());
+    //         userCookie.setHttpOnly(true); 
+    //         userCookie.setPath("/"); 
+    //         userCookie.setMaxAge(60 * 60 * 24); 
+    //         response.addCookie(userCookie);
+
+    //         return ResponseEntity.ok("Connexion réussie !");
+    //     } catch (EntityNotFoundException e) {
+    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou mot de passe incorrect");
+    //     } catch (IllegalArgumentException e) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    //     }
+    // }
+
     @PostMapping("connexion")
     public ResponseEntity<String> login(@RequestBody Map<String, String> payload, HttpServletResponse response) {
         try {
             String login = payload.get("login");
             String motDePasse = payload.get("motDePasse");
 
-            Login authenticatedLogin = loginService.authenticate(login, motDePasse);
+            Cookie userCookie = loginService.handleLogin(login, motDePasse, response);
 
-            Utilisateur utilisateur = authenticatedLogin.getUtilisateur();
-
-            Cookie userCookie = new Cookie("userId", utilisateur.getId().toString());
-            userCookie.setHttpOnly(true); 
-            userCookie.setPath("/"); 
-            userCookie.setMaxAge(60 * 60 * 24); 
             response.addCookie(userCookie);
-
             return ResponseEntity.ok("Connexion réussie !");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou mot de passe incorrect");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-    }
+}
 }

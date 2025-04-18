@@ -5,8 +5,11 @@ import group.pant.api.model.Utilisateur;
 import group.pant.api.repository.LoginRepository;
 import group.pant.api.repository.UtilisateurRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import jakarta.servlet.http.Cookie;
+
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,14 @@ public class LoginService {
         login.setId(id);
         return loginRepository.save(login);
     }
+
+    public Login createLogin(Login login) {
+        Utilisateur utilisateur = utilisateurRepository.findById(login.getUtilisateur().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé avec l'ID : " + login.getUtilisateur().getId()));
+        login.setUtilisateur(utilisateur);
+        return loginRepository.save(login);
+    }
+
 
     public Login patchLogin(int id, Map<String, Object> patch) {
         Login existingLogin = loginRepository.findById(id)
@@ -97,5 +108,18 @@ public class LoginService {
         }
     
         return existingLogin;
+    }
+
+    public Cookie handleLogin(String login, String motDePasse, HttpServletResponse response) {
+        Login authenticatedLogin = authenticate(login, motDePasse);
+
+        Utilisateur utilisateur = authenticatedLogin.getUtilisateur();
+
+        Cookie userCookie = new Cookie("userId", utilisateur.getId().toString());
+        userCookie.setHttpOnly(true);
+        userCookie.setPath("/");
+        userCookie.setMaxAge(60 * 60 * 24); // 1 jour
+
+        return userCookie;
     }
 }
