@@ -17,6 +17,7 @@ import java.time.Instant;
 @Table(name = "utilisateur")
 public class Utilisateur {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -37,11 +38,11 @@ public class Utilisateur {
     private String mail;
 
     @Lob
-    @Column(name = "parametre", nullable = false)
+    @Column(name = "parametre", nullable = true)
     private String parametre;
 
     @ColumnDefault("0")
-    @Column(name = "points_fidelite", nullable = false)
+    @Column(name = "points_fidelite", nullable = true)
     private Integer pointsFidelite;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -50,7 +51,7 @@ public class Utilisateur {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "id_vehicule")
+    @JoinColumn(name = "id_vehicule", nullable = true)
     private Vehicule idVehicule;
 
     @ColumnDefault("current_timestamp()")

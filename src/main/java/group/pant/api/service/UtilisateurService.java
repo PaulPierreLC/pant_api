@@ -16,6 +16,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class UtilisateurService {
+
     private final UtilisateurRepository utilisateurRepository;
     private final RoleRepository roleRepository;
     private final VehiculeRepository vehiculeRepository;
