@@ -1,9 +1,7 @@
 package group.pant.api.service;
 
-import group.pant.api.model.Commande;
-import group.pant.api.model.Adresse;
-import group.pant.api.model.Paiement;
-import group.pant.api.model.Utilisateur;
+import group.pant.api.dto.CommandeDto;
+import group.pant.api.model.*;
 import group.pant.api.repository.CommandeRepository;
 import group.pant.api.repository.AdresseRepository;
 import group.pant.api.repository.PaiementRepository;
@@ -12,6 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -32,9 +32,43 @@ public class CommandeService {
                 .orElseThrow(() -> new EntityNotFoundException("Commande with id " + id + " not found"));
     }
 
-    public Commande addCommande(Commande commande) {
+    public Commande addCommande(CommandeDto commandeDto) {
+        Commande commande = new Commande();
+
+        if (commandeDto.getIdPaiement() != null) {
+            Paiement paiement = paiementRepository.findById(commandeDto.getIdPaiement())
+                    .orElseThrow(() -> new RuntimeException("Paiement not found"));
+            commande.setIdPaiement(paiement);
+        }
+
+        if (commandeDto.getIdUtilisateurClient() != null) {
+            Utilisateur client = utilisateurRepository.findById(commandeDto.getIdUtilisateurClient())
+                    .orElseThrow(() -> new RuntimeException("Utilisateur not found"));
+            commande.setIdUtilisateurClient(client);
+        }
+
+        if (commandeDto.getIdAdresse() != null) {
+            Adresse adresse = adresseRepository.findById(commandeDto.getIdAdresse())
+                    .orElseThrow(() -> new RuntimeException("Adresse not found"));
+            commande.setIdAdresse(adresse);
+        }
+
+        if (commandeDto.getHeure() != null) {
+            String heureStr = commandeDto.getHeure();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime localTime = LocalTime.parse(heureStr, formatter);
+
+            ZoneId zoneId = ZoneId.of("Europe/Paris");
+            ZonedDateTime now = ZonedDateTime.now(zoneId);
+            LocalDate targetDate = now.toLocalTime().isAfter(localTime) ? now.toLocalDate().plusDays(1) : now.toLocalDate();
+            ZonedDateTime heureZoned = ZonedDateTime.of(targetDate, localTime, zoneId);
+
+            commande.setHeure(heureZoned.toInstant());
+        }
+
         return commandeRepository.save(commande);
     }
+
 
     public void deleteCommande(int id) {
         commandeRepository.deleteById(id);
@@ -48,6 +82,7 @@ public class CommandeService {
         existingCommande.setIdUtilisateurClient(commande.getIdUtilisateurClient());
         existingCommande.setIdUtilisateurLivreur(commande.getIdUtilisateurLivreur());
         existingCommande.setIdAdresse(commande.getIdAdresse());
+        existingCommande.setHeure(commande.getHeure());
 
         return commandeRepository.save(existingCommande);
     }
@@ -89,6 +124,9 @@ public class CommandeService {
                                 .orElseThrow(() -> new EntityNotFoundException("Adresse with id " + adresseId + " not found"));
                         existingCommande.setIdAdresse(adresse);
                     }
+                    break;
+                case "heure":
+                    existingCommande.setHeure((Instant) value);
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid field: " + key);
