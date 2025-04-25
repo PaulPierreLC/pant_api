@@ -11,5 +11,6 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
+ENV TZ=Europe/Paris
 COPY --from=build /app/target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=Europe/Paris", "-jar", "app.jar"]
