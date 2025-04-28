@@ -1,5 +1,6 @@
 package group.pant.api.controller;
 
+import group.pant.api.dto.AdresseDto;
 import group.pant.api.dto.CommandeDetailDto;
 import group.pant.api.dto.CommandeDto;
 import group.pant.api.dto.CommandeStatutDto;
@@ -225,8 +226,8 @@ public class ApiController {
     }
 
     @PostMapping("adresses")
-    public Adresse addAdresse(@RequestBody Adresse adresse) {
-        return adresseService.addAdresse(adresse);
+    public Adresse addAdresse(@RequestBody AdresseDto adresseDto) {
+        return adresseService.addAdresse(adresseDto);
     }
 
     @DeleteMapping("adresses/{id}")
