@@ -41,6 +41,9 @@ public class Commande {
     @JoinColumn(name = "id_adresse")
     private Adresse idAdresse;
 
+    @Column(name = "heure", length = 10)
+    private Instant heure;
+
     @ColumnDefault("current_timestamp()")
     @CreationTimestamp
     @Column(name = "date_creer", updatable = false)

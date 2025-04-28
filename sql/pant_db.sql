@@ -240,6 +240,7 @@ CREATE TABLE IF NOT EXISTS `pant_db`.`commande` (
   `id_utilisateur_client` INT NULL,
   `id_utilisateur_livreur` INT NULL,
   `id_adresse` INT NULL,
+  `heure` INT NULL,
   `date_creer` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `date_maj` DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

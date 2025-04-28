@@ -1,5 +1,6 @@
 package group.pant.api.service;
 
+import group.pant.api.dto.CommandeDetailDto;
 import group.pant.api.model.CommandeDetail;
 import group.pant.api.model.Commande;
 import group.pant.api.model.Plat;
@@ -29,9 +30,27 @@ public class CommandeDetailService {
                 .orElseThrow(() -> new EntityNotFoundException("CommandeDetail with id " + id + " not found"));
     }
 
-    public CommandeDetail addCommandeDetail(CommandeDetail commandeDetail) {
-        commandeDetailRepository.save(commandeDetail);
-        return commandeDetail;
+    public List<CommandeDetail> getCommandeDetailsByCommandeId(Integer commandeId) {
+        Commande commande = commandeRepository.findById(commandeId)
+                .orElseThrow(() -> new EntityNotFoundException("Commande with id " + commandeId + " not found"));
+
+        return commandeDetailRepository.findByIdCommande(commande);
+    }
+
+    public CommandeDetail addCommandeDetail(CommandeDetailDto commandeDetailDto) {
+        CommandeDetail commandeDetail = new CommandeDetail();
+
+        Commande commande = commandeRepository.findById(commandeDetailDto.getIdCommande())
+                .orElseThrow(() -> new RuntimeException("Commande not found"));
+        commandeDetail.setIdCommande(commande);
+
+        Plat plat = platRepository.findById(commandeDetailDto.getIdPlat())
+                .orElseThrow(() -> new RuntimeException("Plat not found"));
+        commandeDetail.setIdPlat(plat);
+
+        commandeDetail.setQuantite(commandeDetailDto.getQuantite());
+
+        return commandeDetailRepository.save(commandeDetail);
     }
 
     public void deleteCommandeDetail(int id) {
