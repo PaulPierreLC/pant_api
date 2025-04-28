@@ -795,6 +795,11 @@ public class ApiController {
         return villeService.getVilleById(id);
     }
 
+    @GetMapping("villes/nom/{nom}")
+    public Ville getVille(@PathVariable String nom) {
+        return villeService.getVilleByNom(nom);
+    }
+
     @PostMapping("villes")
     public Ville addVille(@RequestBody Ville ville) {
         return villeService.addVille(ville);
