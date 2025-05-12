@@ -1,7 +1,7 @@
 package group.pant.api.service;
 
-import group.pant.api.model.Adresse;
-import group.pant.api.model.Ville;
+import group.pant.api.dto.AdresseDto;
+import group.pant.api.model.*;
 import group.pant.api.repository.AdresseRepository;
 import group.pant.api.repository.VilleRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,7 +14,6 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AdresseService {
-
     private final AdresseRepository adresseRepository;
     private final VilleRepository villeRepository;
 
@@ -27,7 +26,19 @@ public class AdresseService {
                 .orElseThrow(() -> new EntityNotFoundException("Adresse with id " + id + " not found"));
     }
 
-    public Adresse addAdresse(Adresse adresse) {
+    public Adresse addAdresse(AdresseDto adresseDto) {
+        Adresse adresse = new Adresse();
+
+        Ville ville = villeRepository.findById(adresseDto.getIdVille())
+                .orElseThrow(() -> new RuntimeException("Ville not found"));
+        adresse.setIdVille(ville);
+
+        adresse.setNumero(adresseDto.getNumero());
+        adresse.setRue(adresseDto.getRue());
+        adresse.setComplement(adresseDto.getComplement());
+        adresse.setLongitude(adresseDto.getLongitude());
+        adresse.setLatitude(adresseDto.getLatitude());
+        
         return adresseRepository.save(adresse);
     }
 
