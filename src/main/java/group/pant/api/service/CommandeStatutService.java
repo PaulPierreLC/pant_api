@@ -1,6 +1,5 @@
 package group.pant.api.service;
 
-import group.pant.api.dto.CommandeDetailDto;
 import group.pant.api.dto.CommandeStatutDto;
 import group.pant.api.model.*;
 import group.pant.api.repository.CommandeStatutRepository;
@@ -27,6 +26,13 @@ public class CommandeStatutService {
     public CommandeStatut getCommandeStatutById(int id) {
         return commandeStatutRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("CommandeStatut with id " + id + " not found"));
+    }
+
+    public List<CommandeStatut> getCommandeStatutByCommandeId(int commandeId) {
+        Commande commande = commandeRepository.findById(commandeId)
+                .orElseThrow(() -> new EntityNotFoundException("Commande with id " + commandeId + " not found"));
+
+        return commandeStatutRepository.findByIdCommande(commande);
     }
 
     public CommandeStatut addCommandeStatut(CommandeStatutDto commandeStatutDto) {

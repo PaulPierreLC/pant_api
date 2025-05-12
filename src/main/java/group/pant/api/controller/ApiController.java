@@ -560,6 +560,11 @@ public class ApiController {
         return commandeStatutService.getCommandeStatutById(id);
     }
 
+    @GetMapping("commandeStatuts/commande/{id}")
+    public List<CommandeStatut> getCommandeStatutByCommandeId(@PathVariable int id) {
+        return commandeStatutService.getCommandeStatutByCommandeId(id);
+    }
+
     @PostMapping("commandeStatuts")
     public CommandeStatut addCommandeStatut(@RequestBody CommandeStatutDto commandeStatutDto) {
         return commandeStatutService.addCommandeStatut(commandeStatutDto);
