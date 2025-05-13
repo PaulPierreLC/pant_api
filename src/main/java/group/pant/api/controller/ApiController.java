@@ -846,4 +846,9 @@ public class ApiController {
     public ResponseEntity<Map<String, Object>> getSessionInfo(HttpSession session) {
         return loginService.getSessionInfo(session);
     }
+
+    @PostMapping("logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        return loginService.handleLogout(session);
+    }
 }

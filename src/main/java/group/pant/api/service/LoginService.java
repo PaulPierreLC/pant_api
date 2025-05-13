@@ -159,4 +159,18 @@ public class LoginService {
             "username", username
         ));
     }
+    
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate();
+        System.out.println("Session détruite : JSESSIONID=" + session.getId());
+        return ResponseEntity.ok("Déconnexion réussie !");
+    }
+    
+    public ResponseEntity<String> handleLogout(HttpSession session) {
+        String sessionId = session.getId();
+        session.invalidate();
+        System.out.println("Session détruite : JSESSIONID=" + sessionId);
+        return ResponseEntity.ok("Déconnexion réussie !");
+    }
+    
 }
