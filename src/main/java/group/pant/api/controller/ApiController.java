@@ -2,15 +2,10 @@ package group.pant.api.controller;
 
 import group.pant.api.model.*;
 import group.pant.api.service.*;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -843,19 +838,17 @@ public class ApiController {
     }
 
     @PostMapping("connexion")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> payload, HttpServletResponse response) {
-        try {
-            String login = payload.get("login");
-            String motDePasse = payload.get("motDePasse");
+    public ResponseEntity<String> login(@RequestBody Map<String, String> payload, HttpSession session) {
+        return loginService.handleLogin(payload, session);
+    }
 
-            Cookie userCookie = loginService.handleLogin(login, motDePasse, response);
+    @GetMapping("session")
+    public ResponseEntity<Map<String, Object>> getSessionInfo(HttpSession session) {
+        return loginService.getSessionInfo(session);
+    }
 
-            response.addCookie(userCookie);
-            return ResponseEntity.ok("Connexion réussie !");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou mot de passe incorrect");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-}
+    @PostMapping("logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        return loginService.handleLogout(session);
+    }
 }
