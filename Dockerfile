@@ -22,13 +22,13 @@ FROM openjdk:18
 RUN mkdir -p /app/logs
 
 # Copie le fichier JAR généré dans l'image
-COPY target/*.jar /app/NOM_DU_JAR_CREE.jar
+COPY target/*.jar /app/app.jar
 
 # Définit le point d'entrée du conteneur
 ENTRYPOINT ["sh", "-c", "java -jar /app/*.jar"]
 
 # Expose le port sur lequel l'application écoute
-EXPOSE PORT_DU_PROJET
+EXPOSE 8080
 
 # Définit un volume pour les logs
 VOLUME ["/app/logs"]
