@@ -1,8 +1,7 @@
 package group.pant.api.service;
 
-import group.pant.api.model.CommandeStatut;
-import group.pant.api.model.Commande;
-import group.pant.api.model.Statut;
+import group.pant.api.dto.CommandeStatutDto;
+import group.pant.api.model.*;
 import group.pant.api.repository.CommandeStatutRepository;
 import group.pant.api.repository.CommandeRepository;
 import group.pant.api.repository.StatutRepository;
@@ -29,9 +28,25 @@ public class CommandeStatutService {
                 .orElseThrow(() -> new EntityNotFoundException("CommandeStatut with id " + id + " not found"));
     }
 
-    public CommandeStatut addCommandeStatut(CommandeStatut commandeStatut) {
-        commandeStatutRepository.save(commandeStatut);
-        return commandeStatut;
+    public List<CommandeStatut> getCommandeStatutByCommandeId(int commandeId) {
+        Commande commande = commandeRepository.findById(commandeId)
+                .orElseThrow(() -> new EntityNotFoundException("Commande with id " + commandeId + " not found"));
+
+        return commandeStatutRepository.findByIdCommande(commande);
+    }
+
+    public CommandeStatut addCommandeStatut(CommandeStatutDto commandeStatutDto) {
+        CommandeStatut commandeStatut = new CommandeStatut();
+
+        Commande commande = commandeRepository.findById(commandeStatutDto.getIdCommande())
+                .orElseThrow(() -> new RuntimeException("Commande not found"));
+        commandeStatut.setIdCommande(commande);
+
+        Statut statut = statutRepository.findById(commandeStatutDto.getIdStatut())
+                .orElseThrow(() -> new RuntimeException("Statut not found"));
+        commandeStatut.setIdStatut(statut);
+
+        return commandeStatutRepository.save(commandeStatut);
     }
 
     public void deleteCommandeStatut(int id) {

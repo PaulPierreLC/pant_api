@@ -1,5 +1,9 @@
 package group.pant.api.controller;
 
+import group.pant.api.dto.AdresseDto;
+import group.pant.api.dto.CommandeDetailDto;
+import group.pant.api.dto.CommandeDto;
+import group.pant.api.dto.CommandeStatutDto;
 import group.pant.api.model.*;
 import group.pant.api.service.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -227,8 +231,8 @@ public class ApiController {
     }
 
     @PostMapping("adresses")
-    public Adresse addAdresse(@RequestBody Adresse adresse) {
-        return adresseService.addAdresse(adresse);
+    public Adresse addAdresse(@RequestBody AdresseDto adresseDto) {
+        return adresseService.addAdresse(adresseDto);
     }
 
     @DeleteMapping("adresses/{id}")
@@ -490,9 +494,14 @@ public class ApiController {
         return commandeDetailService.getCommandeDetailById(id);
     }
 
+    @GetMapping("commandeDetails/commande/{commandeId}")
+    public List<CommandeDetail> getCommandeDetailsByCommandeId(@PathVariable int commandeId) {
+        return commandeDetailService.getCommandeDetailsByCommandeId(commandeId);
+    }
+
     @PostMapping("commandeDetails")
-    public CommandeDetail addCommandeDetail(@RequestBody CommandeDetail commandeDetail) {
-        return commandeDetailService.addCommandeDetail(commandeDetail);
+    public CommandeDetail addCommandeDetail(@RequestBody CommandeDetailDto commandeDetailDto) {
+        return commandeDetailService.addCommandeDetail(commandeDetailDto);
     }
 
     @DeleteMapping("commandeDetails/{id}")
@@ -524,8 +533,8 @@ public class ApiController {
     }
 
     @PostMapping("commandes")
-    public Commande addCommande(@RequestBody Commande commande) {
-        return commandeService.addCommande(commande);
+    public Commande addCommande(@RequestBody CommandeDto commandeDto) {
+        return commandeService.addCommande(commandeDto);
     }
 
     @DeleteMapping("commandes/{id}")
@@ -556,9 +565,14 @@ public class ApiController {
         return commandeStatutService.getCommandeStatutById(id);
     }
 
+    @GetMapping("commandeStatuts/commande/{id}")
+    public List<CommandeStatut> getCommandeStatutByCommandeId(@PathVariable int id) {
+        return commandeStatutService.getCommandeStatutByCommandeId(id);
+    }
+
     @PostMapping("commandeStatuts")
-    public CommandeStatut addCommandeStatut(@RequestBody CommandeStatut commandeStatut) {
-        return commandeStatutService.addCommandeStatut(commandeStatut);
+    public CommandeStatut addCommandeStatut(@RequestBody CommandeStatutDto commandeStatutDto) {
+        return commandeStatutService.addCommandeStatut(commandeStatutDto);
     }
 
     @DeleteMapping("commandeStatuts/{id}")
@@ -683,6 +697,11 @@ public class ApiController {
         return platCuisineService.getAllPlatCuisines();
     }
 
+    @GetMapping("plats/restaurant/{restaurantId}")
+    public List<Plat> getPlatsByRestaurantId(@PathVariable int restaurantId) {
+        return platService.getPlatsByRestaurantId(restaurantId);
+    }
+
     @GetMapping("platCuisines/{id}")
     public PlatCuisine getPlatCuisine(@PathVariable int id) {
         return platCuisineService.getPlatCuisineById(id);
@@ -785,6 +804,11 @@ public class ApiController {
     @GetMapping("villes/{id}")
     public Ville getVille(@PathVariable int id) {
         return villeService.getVilleById(id);
+    }
+
+    @GetMapping("villes/nom/{nom}")
+    public Ville getVille(@PathVariable String nom) {
+        return villeService.getVilleByNom(nom);
     }
 
     @PostMapping("villes")

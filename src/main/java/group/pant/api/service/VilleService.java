@@ -13,9 +13,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 
 public class VilleService {
-
     private final VilleRepository villeRepository;
-
 
     public List<Ville> getAllVilles() {
         return villeRepository.findAll();
@@ -24,6 +22,11 @@ public class VilleService {
     public Ville getVilleById(int id) {
         return villeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ville with id " + id + " not found"));
+    }
+
+    public Ville getVilleByNom(String nom) {
+        return villeRepository.findByNom(nom)
+                .orElseThrow(() -> new EntityNotFoundException("Ville with nom: " + nom + " not found"));
     }
 
     public Ville addVille(Ville ville) {
