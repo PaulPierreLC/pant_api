@@ -7,6 +7,7 @@ node {
         withSonarQubeEnv() {
           sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=projet_PANT -DskipTests"
         }
+      }
       stage('Build'){
         def mvn = tool 'maven';
         sh "${mvn}/bin/mvn clean install -DskipTests"
