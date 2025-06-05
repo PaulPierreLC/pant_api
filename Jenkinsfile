@@ -1,29 +1,27 @@
-#!groovy
-
-pipeline {
-    environment {
-        JAVA_TOOL_OPTIONS = "-Duser.home=/home/jenkins"
-    }
-    agent {
-        dockerfile {
-            label "docker"
-            args "-v /tmp/maven:/home/jenkins/.m2 -e MAVEN_CONFIG=/home/jenkins/.m2"
+node {
+      stage('SCM') {
+        checkout scm
+      }
+      stage('SonarQube Analysis') {
+        def mvn = tool 'NOM_DU_MAVEN';
+        withSonarQubeEnv() {
+          sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=NOM_DU_PROJET_SONAR -DskipTests"
         }
-    }
+      }
+      stage("Quality gate") {
+        waitForQualityGate abortPipeline: true
+      }
+      stage('Build'){
+        def mvn = tool 'NOM_DU_MAVEN';
+        sh "${mvn}/bin/mvn clean install -DskipTests"
+      }
 
-    stages {
-        stage("Build") {
-            steps {
-                sh "ssh -V"
-                sh "mvn -version"
-                sh "mvn clean install"
-            }
-        }
-    }
+      stage('Test'){
+        def mvn = tool 'NOM_DU_MAVEN';
+        sh "${mvn}/bin/mvn test"
+      }
+      stage('Save artifacts'){
+        archiveArtifacts artifacts: 'target/*.jar', onlyIfSuccessful: true
+      }
 
-    post {
-        always {
-            cleanWs()
-        }
-    }
 }
