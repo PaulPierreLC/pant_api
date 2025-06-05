@@ -3,11 +3,8 @@ package group.pant.api.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
@@ -18,30 +15,32 @@ import java.time.Instant;
 public class UtilisateurAdresse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_utilisateur", nullable = false)
-    private Utilisateur idUtilisateur;
+    private Utilisateur utilisateur;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_adresse", nullable = false)
-    private Adresse idAdresse;
+    private Adresse adresse;
 
     @Column(name = "defaut", nullable = false)
-    private Boolean defaut = false;
+    private Boolean defaut;
 
-    @ColumnDefault("current_timestamp()")
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private AdresseType type;
+
     @CreationTimestamp
     @Column(name = "date_creer", updatable = false)
-
     private Instant dateCreer;
 
     @UpdateTimestamp
     @Column(name = "date_maj")
     private Instant dateMaj;
 
+    public enum AdresseType {
+        domicile, travail
+    }
 }

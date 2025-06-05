@@ -1,5 +1,6 @@
 package group.pant.api.controller;
 
+import group.pant.api.dto.UtilisateurCreationDTO;
 import group.pant.api.model.*;
 import group.pant.api.service.*;
 import jakarta.servlet.http.HttpSession;
@@ -38,6 +39,7 @@ public class ApiController {
     private final RegimeService regimeService;
     private final VilleService villeService;
     private final LoginService loginService;
+    private final UtilisateurAdresseService utilisateurAdresseService;
 
     @GetMapping()
     public String accueil() {
@@ -57,8 +59,8 @@ public class ApiController {
     }
 
     @PostMapping("utilisateurs")
-    public Utilisateur addUtilisateur(@RequestBody Utilisateur utilisateur) {
-        return utilisateurService.saveUtilisateur(utilisateur);
+    public Utilisateur addUtilisateur(@RequestBody UtilisateurCreationDTO dto) {
+        return utilisateurService.createUtilisateurWithAdresses(dto);
     }
 
     @DeleteMapping("utilisateurs/{id}")
@@ -850,5 +852,23 @@ public class ApiController {
     @PostMapping("logout")
     public ResponseEntity<String> logout(HttpSession session) {
         return loginService.handleLogout(session);
+    }
+
+    // UtilisateurAdresse
+
+    @GetMapping("utilisateurAdresses")
+    public List<UtilisateurAdresse> getUtilisateurAdresses() {
+        return utilisateurAdresseService.getAllUtilisateurAdresses();
+    }
+
+    @PostMapping("utilisateurAdresses")
+    public UtilisateurAdresse addUtilisateurAdresse(@RequestBody UtilisateurAdresse utilisateurAdresse) {
+        return utilisateurAdresseService.addUtilisateurAdresse(utilisateurAdresse);
+    }
+
+    @DeleteMapping("utilisateurAdresses/{id}")
+    public ResponseEntity<String> deleteUtilisateurAdresse(@PathVariable int id) {
+        utilisateurAdresseService.deleteUtilisateurAdresse(id);
+        return ResponseEntity.ok("UtilisateurAdresse with id " + id + " deleted");
     }
 }

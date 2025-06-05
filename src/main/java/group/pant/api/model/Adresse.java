@@ -36,15 +36,22 @@ public class Adresse {
     @Column(name = "latitude")
     private Double latitude;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "id_ville", nullable = false)
+    @JoinColumn(name = "id_ville", nullable = true)
     private Ville idVille;
+
+
+    // Champs pour saisie manuelle de la ville (non persistés)
+    @Transient
+    private String nomVille;
+
+    @Transient
+    private String codePostalVille;
 
     @ColumnDefault("current_timestamp()")
     @CreationTimestamp
     @Column(name = "date_creer", updatable = false)
-
     private Instant dateCreer;
 
     @UpdateTimestamp

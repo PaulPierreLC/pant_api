@@ -1,9 +1,13 @@
 package group.pant.api.service;
 
+import group.pant.api.dto.UtilisateurCreationDTO;
 import group.pant.api.model.Role;
 import group.pant.api.model.Utilisateur;
+import group.pant.api.model.UtilisateurAdresse;
 import group.pant.api.model.Vehicule;
+import group.pant.api.repository.AdresseRepository;
 import group.pant.api.repository.RoleRepository;
+import group.pant.api.repository.UtilisateurAdresseRepository;
 import group.pant.api.repository.UtilisateurRepository;
 import group.pant.api.repository.VehiculeRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,13 +17,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import group.pant.api.model.UtilisateurAdresse.AdresseType;
+
 @Service
 @RequiredArgsConstructor
 public class UtilisateurService {
-
     private final UtilisateurRepository utilisateurRepository;
     private final RoleRepository roleRepository;
     private final VehiculeRepository vehiculeRepository;
+    private final AdresseRepository adresseRepository;
+    private final UtilisateurAdresseRepository utilisateurAdresseRepository;
 
     public List<Utilisateur> getAllUtilisateurs() {
         return utilisateurRepository.findAll();
@@ -104,5 +111,35 @@ public class UtilisateurService {
         });
 
         return utilisateurRepository.save(existingUtilisateur);
+    }
+
+    public Utilisateur createUtilisateurWithAdresses(UtilisateurCreationDTO dto) {
+        Utilisateur utilisateur = dto.getUtilisateur();
+
+        // Correction ici : toujours fournir un JSON valide
+        if (utilisateur.getParametre() == null || utilisateur.getParametre().isBlank()) {
+            utilisateur.setParametre("{}");
+        }
+
+        Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);
+
+        group.pant.api.model.Adresse domicile = adresseRepository.save(dto.getAdresseDomicile());
+        group.pant.api.model.Adresse travail = adresseRepository.save(dto.getAdresseTravail());
+
+        UtilisateurAdresse uaDomicile = new UtilisateurAdresse();
+        uaDomicile.setUtilisateur(savedUtilisateur);
+        uaDomicile.setAdresse(domicile);
+        uaDomicile.setDefaut(true);
+        uaDomicile.setType(AdresseType.domicile);
+        utilisateurAdresseRepository.save(uaDomicile);
+
+        UtilisateurAdresse uaTravail = new UtilisateurAdresse();
+        uaTravail.setUtilisateur(savedUtilisateur);
+        uaTravail.setAdresse(travail);
+        uaTravail.setDefaut(true);
+        uaTravail.setType(AdresseType.travail);
+        utilisateurAdresseRepository.save(uaTravail);
+
+        return savedUtilisateur;
     }
 }
