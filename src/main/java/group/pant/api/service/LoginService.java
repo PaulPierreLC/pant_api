@@ -7,9 +7,11 @@ import group.pant.api.repository.UtilisateurRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import jakarta.servlet.http.Cookie;
-
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +22,6 @@ import java.util.Map;
 public class LoginService {
 
     private final LoginRepository loginRepository;
-    private final UtilisateurRepository utilisateurRepository;
-
-
     private final UtilisateurRepository utilisateurRepository;
 
     public List<Login> getAllLogins() {
@@ -102,14 +101,8 @@ public class LoginService {
     }
 
     public Login authenticate(String login, String motDePasse) {
-        Login existingLogin = loginRepository.findByLogin(login)
-                .orElseThrow(() -> new EntityNotFoundException("Login non trouvé"));
-    
-        if (!existingLogin.getMotDePasse().equals(motDePasse)) {
-            throw new IllegalArgumentException("Mot de passe incorrect");
-        }
-    
-        return existingLogin;
+        return loginRepository.findByLoginAndMotDePasse(login, motDePasse)
+                .orElseThrow(() -> new EntityNotFoundException("Login ou mot de passe incorrect"));
     }
 
     public Cookie handleLogin(String login, String motDePasse, HttpServletResponse response) {
@@ -118,10 +111,66 @@ public class LoginService {
         Utilisateur utilisateur = authenticatedLogin.getUtilisateur();
 
         Cookie userCookie = new Cookie("userId", utilisateur.getId().toString());
-        userCookie.setHttpOnly(true);
+        userCookie.setHttpOnly(false);
+        userCookie.setSecure(false);
         userCookie.setPath("/");
         userCookie.setMaxAge(60 * 60 * 24); // 1 jour
+        response.addCookie(userCookie);
+        System.out.println("Cookie créé : " + userCookie.getName() + " = " + userCookie.getValue());
 
         return userCookie;
     }
+
+    public ResponseEntity<String> handleLogin(Map<String, String> payload, HttpSession session) {
+        try {
+            String login = payload.get("login");
+            String motDePasse = payload.get("motDePasse");
+
+            // Authentifier l'utilisateur
+            Login authenticatedLogin = authenticate(login, motDePasse);
+
+            // Stocker les informations utilisateur dans la session
+            session.setAttribute("userId", authenticatedLogin.getUtilisateur().getId());
+            session.setAttribute("username", authenticatedLogin.getLogin());
+
+            // Log de création de session
+            System.out.println("Session créée : JSESSIONID=" + session.getId() +
+                ", userId=" + session.getAttribute("userId") +
+                ", username=" + session.getAttribute("username"));
+
+            return ResponseEntity.ok("Connexion réussie !");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou mot de passe incorrect");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    public ResponseEntity<Map<String, Object>> getSessionInfo(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        String username = (String) session.getAttribute("username");
+
+        if (userId == null || username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Utilisateur non connecté"));
+        }
+
+        return ResponseEntity.ok(Map.of(
+            "userId", userId,
+            "username", username
+        ));
+    }
+    
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate();
+        System.out.println("Session détruite : JSESSIONID=" + session.getId());
+        return ResponseEntity.ok("Déconnexion réussie !");
+    }
+    
+    public ResponseEntity<String> handleLogout(HttpSession session) {
+        String sessionId = session.getId();
+        session.invalidate();
+        System.out.println("Session détruite : JSESSIONID=" + sessionId);
+        return ResponseEntity.ok("Déconnexion réussie !");
+    }
+    
 }

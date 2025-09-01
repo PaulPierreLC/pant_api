@@ -1,5 +1,6 @@
 package group.pant.api.model;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,6 @@ public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "prenom", length = 45)
@@ -38,7 +38,8 @@ public class Utilisateur {
     private String mail;
 
     @Lob
-    @Column(name = "parametre", nullable = true)
+    @Column(name = "parametre", nullable = false, columnDefinition = "json")
+    @JsonRawValue
     private String parametre;
 
     @ColumnDefault("0")
